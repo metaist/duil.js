@@ -9,11 +9,56 @@
 }(function (_, $) {
   'use strict';
 
+  /**
+    Return a self-reference.
+    @private
+    @returns {Object} A reference to `this`.
+  */
+  var noop = function () { return this; };
+
   /** Data + UI + Loop = duil  */
   var duil = {};
 
   /** Versioning using semantic versioning. <http://semver.org> */
   duil.VERSION = '0.0.1';
+
+  /// UTILITIES ///
+
+  /**
+    Construct a CustomWidget class.
+
+    Use this function to create a class that can be instantiated multiple times.
+    @param {Object} baseclass Widget to be extended.
+    @param {Object} baseprops Initial properties to be added to the constructor.
+    @returns {duil.Widget} Returns a constructor for a custom widget.
+    @example
+
+    var NumberWidget = duil.extend(duil.Widget, {val: 42});
+    var MyNumber = new NumberWidget();
+    console.log(MyNumber.val);
+    // => 42
+
+    var YourNumber = new NumberWidget({val: 24});
+    console.log(YourNumber.val);
+    // => 24
+  */
+  duil.extend = function (baseclass, baseprops) {
+    if (!baseclass) { baseclass = duil.Widget; }
+    if (!baseprops) { baseprops = {}; }
+
+    var CustomWidget = function (props) {
+      if (!(this instanceof CustomWidget)) { return new CustomWidget(props); }
+
+      this.set(baseprops, false);
+      baseclass.call(this, props);
+    };
+
+    // Extend prototype for inheritence.
+    CustomWidget.prototype = Object.create(baseclass.prototype);
+    CustomWidget.constructor = baseclass;
+
+    return CustomWidget;
+  };
 
   /// WIDGET ///
 
@@ -25,7 +70,7 @@
     to the widget itself. Properties are updated using `.set()` which will call
     `.render()` if any of the properites are changed.
 
-    @param {object} props The initial properties of this object.
+    @param {Object} props The initial properties of this object.
 
     @example
 
@@ -43,10 +88,8 @@
     // => 5
   */
   duil.Widget = function (props) {
-    _.forOwn(props, function (val, prop) {
-      this[prop] = _.isFunction(val) ? val.bind(this) : val;
-    }, this);
-    // properties are added; methods are bound to
+    if (!(this instanceof duil.Widget)) { return new duil.Widget(props); }
+
     this.set(props, false);
     this.init();
     this.render();
@@ -77,7 +120,7 @@
     console.log(MyWidget.value);
     // => 42
   */
-  duil.Widget.prototype.init = function () { return this; };
+  duil.Widget.prototype.init = noop;
 
 
   /**
@@ -158,11 +201,11 @@
     it uses certain properties and methods to help manage the list.
 
     @extends duil.Widget
-    @param {object} props The initial properties of the widget.
+    @param {Object} props The initial properties of the widget.
     @property {jQuery} $dom The container for the list.
     @property {jQuery} $tmpl The template for a single item.
-    @property {jQuery} $items The list items into which data will be rendered.
-    @property {array} items The list data.
+    @property {String} selector The selector for the list items.
+    @property {Array} data The list data.
     @example
 
     $('body').append('<ul id="my-list"><li></li></ul>');
@@ -173,38 +216,42 @@
       //@override
       init: function () {
         this.$tmpl = this.$dom.find('li').remove();
-        this.$items = this.$dom.find('li');
         return this;
       }
     });
 
-    MyList.set({items: [1, 2, 3]});
+    MyList.set({data: [1, 2, 3]});
     // => <ul id="my-list"><li>1</li><li>2</li><li>3</li></ul>
   */
-  duil.List = function (props) {
-    this.$dom = $();
-    this.$tmpl = $('<li />');
-    this.$items = $();
-    this.items = [];
+  duil.List = duil.extend(duil.Widget, {
+    $dom: $(),
+    $tmpl: $('li'),
+    selector: 'li',
+    data: [],
+  });
 
-    duil.Widget.call(this, props);
+  /**
+    Initialize the list.
+
+    By default, select the first item in the list as the template.
+    @returns {duil.List} Returns the widget itself for chaining.
+  */
+  duil.List.prototype.init = function () {
+    this.$tmpl = this.$dom.find(this.selector).remove();
+    return this;
   };
-
-  /** Extend duil.List with the duil.Widget prototype.*/
-  duil.List.prototype = Object.create(duil.Widget.prototype);
-  duil.List.constructor = duil.Widget;
 
   /**
     Return the DOM object to update.
 
-    By default, return the nth DOM object in `this.$items`.
+    By default, return the nth DOM object in the list items.
 
-    @param {*} item The item data.
-    @param {number} index The 0-based number of this object.
+    @param {*} data The item data.
+    @param {Number} index The 0-based number of this object.
     @returns {jQuery} Returns the DOM object to update.
   */
-  duil.List.prototype.key = function (item, index) {
-    return this.$items.eq(index);
+  duil.List.prototype.key = function (data, index) {
+    return this.$dom.find(this.selector).eq(index);
   };
 
   /**
@@ -213,13 +260,13 @@
     By default, clones `this.$tmpl`, updates it using `this.udpate()`, and then
     appends it to `this.$dom`.
 
-    @param {*} item The item data.
-    @param {number} index The 0-based number of this object.
+    @param {*} data The item data.
+    @param {Number} index The 0-based number of this object.
     @returns {duil.List} Returns the widget itself for chaining.
   */
-  duil.List.prototype.add = function (item, index) {
+  duil.List.prototype.add = function (data, index) {
     var $item = this.$tmpl.clone();
-    this.update(item, index, $item);
+    this.update(data, index, $item);
     this.$dom.append($item);
     return this;
   };
@@ -229,13 +276,13 @@
 
     By default, sets the text of the item to the item data.
 
-    @param {*} item The item data.
-    @param {number} index The 0-based number of this object.
+    @param {*} data The item data.
+    @param {Number} index The 0-based number of this object.
     @param {jQuery} $item The DOM object to update.
     @returns {duil.List} Returns the widget itself for chaining.
   */
-  duil.List.prototype.update = function (item, index, $item) {
-    $item.text(item);
+  duil.List.prototype.update = function (data, index, $item) {
+    $item.text(data);
     return this;
   };
 
@@ -244,25 +291,24 @@
 
     By default, removes the DOM object using jQuery.
 
-    @param {jQuery} $item The DOM object to remove.
+    @param {jQuery} $items The DOM objects to remove.
     @returns {duil.List} Returns the widget itself for chaining.
   */
-  duil.List.prototype.remove = function ($item) {
-    $item.remove();
+  duil.List.prototype.remove = function ($items) {
+    $items.remove();
     return this;
   };
 
   /**
     Render the widget when data changes.
 
-    By default, reselect `this.$items` and stich `this.data` to them.
+    By default, reselect the DOM items and stich `this.data` to them.
 
     @override
     @returns {duil.List} Returns the widget itself for chaining.
   */
   duil.List.prototype.render = function () {
-    this.$items = $(this.$items.selector, this.$items.context);
-    return this.stitch(this.items, this.$items);
+    return this.stitch(this.data, this.$dom.find(this.selector));
   };
 
   /**
@@ -272,23 +318,23 @@
     DOM objects that aren't found are created; those that are found are updated.
     Items that exist and were selected, but not updated, are removed.
 
-    @param {array} items Array of item data.
+    @param {Array} data Array of item data.
     @param {jQuery} $items DOM objects into which data should be bound.
     @returns {duil.List} Returns the widget itself for chaining.
   */
-  duil.List.prototype.stitch = function (items, $items) {
-    var $touched = [];
-    _.each(items, function (item, index) {
-      var $item = this.key(item, index);
+  duil.List.prototype.stitch = function (data, $items) {
+    var touched = [];
+    _.each(data, function (datum, index) {
+      var $item = this.key(datum, index);
       if (!$item.length) { // add
-        this.add(item, index);
+        this.add(datum, index);
       } else { // update
-        this.update(item, index, $item);
-        $touched.push($item);
+        this.update(datum, index, $item);
+        touched.push($item.get()[0]);
       }//end if: add or update item
     }, this);
 
-    this.remove($(_.difference($items, $touched))); // untouched removed
+    this.remove($items.not(touched)); // untouched removed
     return this;
   };
 
