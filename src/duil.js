@@ -155,7 +155,7 @@
       }
     });
   */
-  duil.Widget.prototype.render = function () { return this; };
+  duil.Widget.prototype.render = noop;
 
   /*
     Update properties of the widget.
@@ -233,12 +233,25 @@
   /**
     Initialize the list.
 
-    By default, select the first item in the list as the template.
+    By default, the template is a detached DOM node using `this.items()`.
+
+    @override
     @returns {duil.List} Returns the widget itself for chaining.
   */
   duil.List.prototype.init = function () {
-    this.$tmpl = this.$dom.find(this.selector).remove();
+    this.$tmpl = this.items().remove();
     return this;
+  };
+
+  /**
+    Return the DOM objects that can be updated.
+
+    By default, this function finds `this.selector` within `this.$dom`.
+
+    @returns {jQuery} Returns the DOM objects that can be selected.
+  */
+  duil.List.prototype.items = function () {
+    return this.$dom.find(this.selector);
   };
 
   /**
@@ -251,7 +264,7 @@
     @returns {jQuery} Returns the DOM object to update.
   */
   duil.List.prototype.key = function (data, index) {
-    return this.$dom.find(this.selector).eq(index);
+    return this.items().eq(index);
   };
 
   /**
@@ -302,34 +315,24 @@
   /**
     Render the widget when data changes.
 
-    By default, reselect the DOM items and stich `this.data` to them.
-
-    @override
-    @returns {duil.List} Returns the widget itself for chaining.
-  */
-  duil.List.prototype.render = function () {
-    return this.stitch(this.data, this.$dom.find(this.selector));
-  };
-
-  /**
-    Apply data to DOM objects.
+    By default, reselect the DOM items and stitch `this.data` to them.
 
     This method uses the `.key()` method to map the item data to the DOM.
     DOM objects that aren't found are created; those that are found are updated.
     Items that exist and were selected, but not updated, are removed.
 
-    @param {Array} data Array of item data.
-    @param {jQuery} $items DOM objects into which data should be bound.
+    @override
     @returns {duil.List} Returns the widget itself for chaining.
   */
-  duil.List.prototype.stitch = function (data, $items) {
+  duil.List.prototype.render = function () {
+    var $items = this.items();
     var touched = [];
-    _.each(data, function (datum, index) {
-      var $item = this.key(datum, index);
+    _.each(this.data, function (data, index) {
+      var $item = this.key(data, index);
       if (!$item.length) { // add
-        this.add(datum, index);
+        this.add(data, index);
       } else { // update
-        this.update(datum, index, $item);
+        this.update(data, index, $item);
         touched.push($item.get()[0]);
       }//end if: add or update item
     }, this);
