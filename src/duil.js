@@ -1,4 +1,4 @@
-/*! duil v0.0.1 - Copyright 2015 Metaist <http://opensource.org/licenses/MIT> */
+/*! duil v0.1.0 - Copyright 2015 Metaist <http://opensource.org/licenses/MIT> */
 ;(function (factory) {
   'use strict';
   if ('function' === typeof define && define.amd) {
@@ -20,42 +20,60 @@
   var duil = {};
 
   /** Versioning using semantic versioning. <http://semver.org> */
-  duil.VERSION = '0.0.1';
+  duil.VERSION = '0.1.0';
 
-  /// UTILITIES ///
+  /// INTERNAL ///
+
+  /**
+    Return an objects prototype, prototype property, or call a prototype
+    function.
+
+      - If `prop` is omitted, return `classObj.prototype`.
+      - If `prop` refers to a function, return the result of the method
+        using `thisArg` for context.
+
+    @private
+    @param {Object} classObj The object whose prototype to examine.
+    @param {String} [prop] The property or method to return.
+    @param {Object} [thisArg] The value of `this` to bind for methods.
+    @param {...*} [args] Arguments to pass to the method.
+    @returns {*} The result of interacting with the superclass.
+  */
+  var baseSuperclass = function (classObj, prop, thisArg, args) {
+    var result = classObj.prototype;
+    if (prop) { result = result[prop]; }
+    if (_.isFunction(result)) { result = result.apply(thisArg, args); }
+    return result;
+  };
+
 
   /**
     Construct a CustomWidget class.
 
     Use this function to create a class that can be instantiated multiple times.
-    @param {Object} baseclass Widget to be extended.
+
+    @private
+    @param {Object} [baseclass] Widget to be extended (default: duil.Widget).
     @param {Object} baseprops Initial properties to be added to the constructor.
-    @returns {duil.Widget} Returns a constructor for a custom widget.
-    @example
-
-    var NumberWidget = duil.extend(duil.Widget, {val: 42});
-    var MyNumber = new NumberWidget();
-    console.log(MyNumber.val);
-    // => 42
-
-    var YourNumber = new NumberWidget({val: 24});
-    console.log(YourNumber.val);
-    // => 24
+    @returns {Object} Returns a constructor for a custom widget.
   */
-  duil.extend = function (baseclass, baseprops) {
+  var baseSubclass = function (baseclass, baseprops) {
     if (!baseclass) { baseclass = duil.Widget; }
     if (!baseprops) { baseprops = {}; }
 
     var CustomWidget = function (props) {
       if (!(this instanceof CustomWidget)) { return new CustomWidget(props); }
-
-      this.set(baseprops, false);
       baseclass.call(this, props);
     };
 
     // Extend prototype for inheritence.
     CustomWidget.prototype = Object.create(baseclass.prototype);
+    CustomWidget.prototype.__superclass__ = baseclass;
     CustomWidget.constructor = baseclass;
+    _.extend(CustomWidget.prototype, baseprops); // added prototype props
+    _.forOwn(baseclass, function (val, prop) {
+      CustomWidget[prop] = val;
+    }); // added own properties
 
     return CustomWidget;
   };
@@ -95,6 +113,85 @@
     this.render();
   };
 
+
+  /**
+    Return a subclass of duil.Widget with the given base properties.
+
+    @param {Object} [baseprops] The prototype to provide to the subclass.
+    @returns {Object} Returns the subclass constructor.
+    @example
+
+    var NumberWidget = duil.Widget.subclass({val: 42});
+    var MyNumber = new NumberWidget();
+    console.log(MyNumber.val);
+    // => 42
+
+    var YourNumber = new NumberWidget({val: 24});
+    console.log(YourNumber.val);
+    // => 24
+  */
+  duil.Widget.subclass = function (baseprops) {
+    return baseSubclass(this, baseprops);
+  };
+
+
+  /**
+    Return property or method call on the superclass.
+
+    The optional `parent` parameter allows you to specify a class further up
+    the prototype chain to use as the parent.
+
+    @param {Object} [parent] The class to inspect (default: immediate parent).
+    @param {String} prop Name of the property to retreive.
+    @param {...*} [params] Arguments to pass, if property is a method.
+    @returns {*} Returns the property or method result from the superclass.
+    @example
+
+    var WidgetA = duil.Widget.subclass({
+      name: 'WidgetA',
+      say: function (punct) {
+        return 'I am ' + this.name + (punct || '');
+      }
+    });
+
+    var a = new WidgetA();
+    a.say();
+    // => 'I am WidgetA'
+
+    var WidgetB = WidgetA.subclass({
+      name: 'WidgetB',
+      punct: '!',
+      say: function () {
+        return this.superclass('say', this.punct);
+      }
+    });
+
+    var b = new WidgetB({name: 'Bob'});
+    b.say();
+    // => 'I am Bob!'
+
+    var WidgetC = WidgetB.subclass({
+      name: 'WidgetC',
+      say: function (insult) {
+        return this.superclass(WidgetA, 'say', ', ' + insult) +
+               this.superclass('punct');
+      }
+    });
+
+    var c = new WidgetC({name: 'Sparticus'});
+    c.say('you fool');
+    // => 'I am Sparticus, you fool!'
+  */
+  duil.Widget.prototype.superclass = function (parent, prop, params) {
+    if (_.isString(parent)) {
+      prop = parent;
+      parent = this.__superclass__;
+      params = _.slice(arguments, 1);
+    } else {
+      params = _.slice(arguments, 2);
+    }//end if: args processed
+    return baseSuperclass(parent, prop, this, params);
+  };
 
   /**
     Initialize the widget.
@@ -180,15 +277,23 @@
   */
   duil.Widget.prototype.set = function (props, force) {
     var doRender = false;
-    _.forOwn(props, function (val, prop) {
-      if (!_.isEqual(_.get(this, prop), val)) {
+    if (_.isBoolean(force)) { // cheap; no checking
+      doRender = force;
+      _.forOwn(props, function (val, prop) {
         _.set(this, prop, _.isFunction(val) ? val.bind(this) : val);
-        doRender = true;
-      }//end if: changed properties are updated
-    }, this);
+      }, this);
+    } else { // expensive; equality checking
+      _.forOwn(props, function (val, prop) {
+        if (!_.isEqual(_.get(this, prop), val)) {
+          _.set(this, prop, _.isFunction(val) ? val.bind(this) : val);
+          doRender = true;
+        }//end if: changed properties are updated
+      }, this);
 
-    if (_.isBoolean(force)) { doRender = force; }
-    return doRender ? this.render() : this;
+    }//end if: short path
+
+    if (doRender) { this.render(); }
+    return this;
   };
 
 
@@ -223,7 +328,7 @@
     MyList.set({data: [1, 2, 3]});
     // => <ul id="my-list"><li>1</li><li>2</li><li>3</li></ul>
   */
-  duil.List = duil.extend(duil.Widget, {
+  duil.List = duil.Widget.subclass({
     $dom: $(),
     $tmpl: $('li'),
     selector: 'li',
