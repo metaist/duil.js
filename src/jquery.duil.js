@@ -1,4 +1,9 @@
-define(['lodash', 'jquery'], function (_, $) {
+define('./jquery.duil', [
+  'jquery',
+  'lodash'
+], function ($, _) {
+  'use strict'; // build ignore:line
+
   /**
     Set attributes of the selected DOM objects if they haven't changed.
 
