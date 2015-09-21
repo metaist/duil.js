@@ -18,7 +18,7 @@ gulp.task('default', function () {
     'src/duil.core.js',
     'src/duil.Widget.js',
     'src/duil.List.js',
-    'src/jquery.duil'
+    'src/jquery.duil.js'
   ])
   .pipe(sourcemaps.init())
 
