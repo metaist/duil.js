@@ -48,5 +48,5 @@ gulp.task('default', function () {
   .pipe(uglify())
 
   .pipe(sourcemaps.write('./'))
-  .pipe(gulp.dest('dist'))
+  .pipe(gulp.dest('dist'));
 });
