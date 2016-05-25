@@ -1,4 +1,4 @@
-/*! duil.js v0.1.0 | (c) 2015 Metaist | MIT License */
+/*! duil.js v0.1.2 | (c) 2016 Metaist LLC | MIT License */
 (function(root, factory) {
   if (typeof define === 'function' && define.amd) {
     define(["jquery","lodash"], factory);
@@ -15,7 +15,7 @@
   var duil = {};
 
   /** Semantic Version <http://semver.org> */
-  duil.VERSION = '0.1.0';
+  duil.VERSION = '0.1.2';
 
   /**
     Construct a data-driven UI widget.
@@ -233,17 +233,16 @@
     var doRender = false;
     if (_.isBoolean(force)) { // cheap; no checking
       doRender = force;
-      _.forOwn(props, function (val, prop) {
+      _.forOwn(props, _.bind(function (val, prop) {
         _.set(this, prop, _.isFunction(val) ? val.bind(this) : val);
-      }, this);
+      }, this));
     } else { // expensive; equality checking
-      _.forOwn(props, function (val, prop) {
+      _.forOwn(props, _.bind(function (val, prop) {
         if (!_.isEqual(_.get(this, prop), val)) {
           _.set(this, prop, _.isFunction(val) ? val.bind(this) : val);
           doRender = true;
         }//end if: changed properties are updated
-      }, this);
-
+      }, this));
     }//end if: short path
 
     if (doRender) { this.render(); }
@@ -383,7 +382,7 @@
   duil.List.prototype.render = function () {
     var $items = this.items();
     var touched = [];
-    _.each(this.data, function (data, index) {
+    _.each(this.data, _.bind(function (data, index) {
       var $item = this.key(data, index);
       if (!$item.length) { // add
         this.add(data, index);
@@ -391,7 +390,7 @@
         this.update(data, index, $item);
         touched.push($item.get()[0]);
       }//end if: add or update item
-    }, this);
+    }, this));
 
     this.remove($items.not(touched)); // untouched removed
     return this;
