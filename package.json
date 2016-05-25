@@ -1,6 +1,6 @@
 {
   "name": "duil.js",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Tiny data-driven ui rendering framework.",
   "main": "dist/duil.js",
   "directories": {
@@ -25,7 +25,7 @@
     "type": "git",
     "url": "git://github.com/metaist/duil.js.git"
   },
-  "author": "Metaist",
+  "author": "Metaist LLC",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/metaist/duil.js/issues"
