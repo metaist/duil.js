@@ -138,7 +138,7 @@ define([
   duil.List.prototype.render = function () {
     var $items = this.items();
     var touched = [];
-    _.each(this.data, function (data, index) {
+    _.each(this.data, _.bind(function (data, index) {
       var $item = this.key(data, index);
       if (!$item.length) { // add
         this.add(data, index);
@@ -146,7 +146,7 @@ define([
         this.update(data, index, $item);
         touched.push($item.get()[0]);
       }//end if: add or update item
-    }, this);
+    }, this));
 
     this.remove($items.not(touched)); // untouched removed
     return this;

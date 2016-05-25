@@ -220,17 +220,16 @@ define([
     var doRender = false;
     if (_.isBoolean(force)) { // cheap; no checking
       doRender = force;
-      _.forOwn(props, function (val, prop) {
+      _.forOwn(props, _.bind(function (val, prop) {
         _.set(this, prop, _.isFunction(val) ? val.bind(this) : val);
-      }, this);
+      }, this));
     } else { // expensive; equality checking
-      _.forOwn(props, function (val, prop) {
+      _.forOwn(props, _.bind(function (val, prop) {
         if (!_.isEqual(_.get(this, prop), val)) {
           _.set(this, prop, _.isFunction(val) ? val.bind(this) : val);
           doRender = true;
         }//end if: changed properties are updated
-      }, this);
-
+      }, this));
     }//end if: short path
 
     if (doRender) { this.render(); }
