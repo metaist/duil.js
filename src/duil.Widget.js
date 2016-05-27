@@ -65,7 +65,7 @@ define([
     CustomWidget.prototype = Object.create(baseclass.prototype);
     CustomWidget.prototype.__superclass__ = baseclass;
     CustomWidget.constructor = baseclass;
-    _.extend(CustomWidget.prototype, baseprops); // added prototype props
+    _.assignIn(CustomWidget.prototype, baseprops); // added prototype props
     _.forOwn(baseclass, function (val, prop) {
       CustomWidget[prop] = val;
     }); // added own properties
