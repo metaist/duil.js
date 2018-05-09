@@ -1,0 +1,32 @@
+{
+  "source": {
+    "exclude": ["./src/lodash.js"],
+    "include": [
+      "./src/Widget.js",
+      "./src/Group.js",
+      "./src/List.js",
+      "./src/jquery.duil.js"
+    ]
+  },
+  "opts": {
+    "encoding": "utf8",
+    "template": "node_modules/docdash",
+    "destination": "./docs/",
+    "readme": "README.markdown",
+    "recurse": true,
+    "verbose": true
+  },
+  "plugins": ["plugins/markdown"],
+  "templates": {
+    "cleverLinks": false,
+    "monospaceLinks": true,
+    "default": {
+      "outputSourceFiles": true,
+      "includeDate": false
+    }
+  },
+  "docdash": {
+    "static": true,
+    "sort": false
+  }
+}
