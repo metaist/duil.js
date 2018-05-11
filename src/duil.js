@@ -9,7 +9,7 @@
   @memberof duil
   @name VERSION
 */
-export {version as VERSION} from '../package.json';
+export {version} from '../package.json';
 
 export {default as Widget} from './Widget';
 export {default as Group} from './Group';
