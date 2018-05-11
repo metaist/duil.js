@@ -12,7 +12,7 @@
 [Documentation]: https://metaist.github.io/duil.js/
 [Issues]: https://github.com/metaist/duil.js/issues
 
-[badge-version]: https://img.shields.io/badge/version-0.2.0-blue.svg
+[badge-version]: https://img.shields.io/badge/version-0.3.0-blue.svg
 [badge-license]: https://img.shields.io/badge/license-MIT-blue.svg
 [badge-release]: https://img.shields.io/github/downloads/metaist/duil.js/total.svg
 [badge-travis]: https://travis-ci.org/metaist/duil.js.svg?branch=master

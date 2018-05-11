@@ -7,7 +7,7 @@
   @summary [Semantic Version](http://semver.org) of duil.
   @constant
   @memberof duil
-  @name VERSION
+  @name version
 */
 export {version} from '../package.json';
 
