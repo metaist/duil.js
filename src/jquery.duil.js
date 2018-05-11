@@ -1,4 +1,5 @@
 import * as _ from './lodash';
+/* eslint valid-jsdoc: 0 */
 
 /**
   @external "jQuery.fn"
@@ -7,9 +8,7 @@ import * as _ from './lodash';
   */
 
 /**
-  @summary
-  Set attributes of the selected DOM objects if they haven't changed.
-
+  @summary Set attributes of the selected DOM objects if they haven't changed.
   @description
   * `attr` is one of:
   *   - `html`
@@ -36,47 +35,39 @@ import * as _ from './lodash';
   *   'prop:disabled': true
   * });
   */
-const jQuery_set = function(attr, value) {
-  var vals = {};
-  var rules = [];
-
-  if (_.isPlainObject(attr)) { // multiple
-    vals = attr;
-  } else { // single
-    vals[attr] = value;
-  }//end if: have values
-
-  rules = _.map(vals, function (val, fn) {
-    var name = null;
-    var pos = fn.indexOf(':');
-    if (-1 !== pos) {
-      name = fn.substr(pos + 1);
-      fn = fn.substring(0, pos);
-    }//end if: split on first colon
-
+const jQuery_set = function (attr, value) {
+  const split = (val, key) => {
+    const [fn, name] = key.split(/:(.*)/, 2); // split on first colon
     return {
-      fn: fn,
-      name: name,
-      val: _.isFunction(val) ? val : _.constant(val)
+      // the property getter / setter
+      fn: fn, name: name,
+      isClass: fn.endsWith('Class'),
+      val: _.isFunction(val) ? val : () => val // the value to set
     };
-  });
+  };
+  const rules = _.isPlainObject(attr) ?
+    _.map(attr, split) : [split(value, attr)];
 
-  return this.each(function (index, dom) {
-    var $dom = $(dom);
-    _.forEach(rules, function (rule) {
-      var fn = _.bind($dom[rule.fn], $dom);
-      if (rule.name) { fn = _.partial(fn, rule.name); }
+  // eslint-disable-next-line no-invalid-this
+  return this.each((index, dom) => {
+    var $dom = $(dom); // eslint-disable-line no-undef
+    _.forEach(rules, (rule) => {
+      const fn = rule.name ?
+        (...args) => $dom[rule.fn].bind($dom)(rule.name, ...args) :
+        $dom[rule.fn].bind($dom);
 
-      var is_class = _.endsWith(rule.fn, 'Class');
-      var prev = is_class ? $dom.attr('class') : fn();
-      var val = _.bind(rule.val, dom)(index, prev);
-      if (is_class || prev !== val) { fn(val); }
-    });//end for: all rules applied
-  });//end for: all DOM nodes applied
+      // get the previous and next values for the property
+      const prev = rule.isClass ? dom.getAttribute('class') : fn();
+      const next = rule.val.bind(dom)(index, prev);
+      if (rule.isClass || prev !== next) { fn(next); } // change if different
+    });// end for: all rules applied
+  });// end for: all DOM nodes applied
 };
 
-if (global.$ && global.$.extend && global.$.fn) {
-  global.$.extend(global.$.fn, {set: jQuery_set});
-}//end if: jQuery_set exposed only if jQuery (or similar substitute exists)
+// eslint-disable-next-line no-new-func
+var top = Function('return this')() || global;
+if (top.$ && top.$.extend && top.$.fn) {
+  top.$.extend(top.$.fn, {set: jQuery_set});
+}// end if: exposed only if jQuery-like API exists
 
 export default jQuery_set;

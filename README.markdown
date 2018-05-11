@@ -3,11 +3,19 @@
 
 **duil** (sounds like duel) is a simple JavaScript library for creating single page apps that react to changes in their underlying data. duil leverages the technologies you already know, like JavaScript and HTML, instead of making you learn a brand new syntax. With duil, you can create dynamic web pages with less code and cleaner abstractions.
 
-[![Build Status](https://travis-ci.org/metaist/duil.js.svg?branch=master)](https://travis-ci.org/metaist/duil.js)
+[![version][badge-version]](https://github.com/metaist/duil.js/blob/master/CHANGELOG.md)
+[![license][badge-license]](https://github.com/metaist/duil.js/blob/master/LICENSE.md)
+[![releases][badge-release]][Latest Release]
+[![build][badge-travis]](https://travis-ci.org/metaist/duil.js)
 
 [Latest Release]: https://github.com/metaist/duil.js/releases/latest
-[Documentation]: https://github.com/metaist/duil.js/wiki
+[Documentation]: https://metaist.github.io/duil.js/
 [Issues]: https://github.com/metaist/duil.js/issues
+
+[badge-version]: https://img.shields.io/badge/version-0.3.0-blue.svg
+[badge-license]: https://img.shields.io/badge/license-MIT-blue.svg
+[badge-release]: https://img.shields.io/github/downloads/metaist/duil.js/total.svg
+[badge-travis]: https://travis-ci.org/metaist/duil.js.svg?branch=master
 
 ## Why?
 You already know HTML and JavaScript, why should you learn a new syntax just to render templates and make components? You just need a something that updates when its data changes.
@@ -15,7 +23,7 @@ You already know HTML and JavaScript, why should you learn a new syntax just to 
 ## Example
 Here is a simple Hello World widget, taken from the [React] documentation:
 ```javascript
-var HelloMessage = duil.Widget({
+var HelloMessage = new duil.Widget({
   $dom: $('<div>'),
   name: '',
 

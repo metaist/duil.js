@@ -7,9 +7,9 @@
   @summary [Semantic Version](http://semver.org) of duil.
   @constant
   @memberof duil
-  @name VERSION
+  @name version
 */
-export {version as VERSION} from '../package.json';
+export {version} from '../package.json';
 
 export {default as Widget} from './Widget';
 export {default as Group} from './Group';

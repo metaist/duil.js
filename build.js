@@ -15,7 +15,7 @@ ${pkg.author.name} <${pkg.author.url}> | @license ${pkg.license} */`
 // Configuration data
 const dest = `dist/${PKG_NAME}.js`;
 const dest_min = `dist/${PKG_NAME}.min.js`
-const plugins = [resolve(), json(), buble()];
+const plugins = [resolve(), json()];
 const plugins_min = plugins.concat([uglify({
   mangle: true,
   output: {

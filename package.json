@@ -1,8 +1,13 @@
 {
   "name": "duil",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Tiny data-driven ui rendering framework.",
-  "keywords": ["data-ui-loop", "html", "templates", "single-page-app"],
+  "keywords": [
+    "data-ui-loop",
+    "html",
+    "templates",
+    "single-page-app"
+  ],
   "license": "MIT",
   "homepage": "https://github.com/metaist/duil.js",
   "bugs": {
@@ -19,8 +24,9 @@
   "main": "dist/duil.js",
   "scripts": {
     "dev": "./build.js -w",
+    "all": "yarn clean && yarn lint && yarn build && yarn test && yarn docs",
     "clean": "rm -rf ./docs; rm -rf dist",
-    "prepare": "yarn build && yarn test && yarn docs",
+    "lint": "eslint src/*.js test/*.js",
     "build": "./build.js",
     "test": "tape test/**/*.js | tap-summary",
     "docs": "jsdoc -c jsdoc.json"
@@ -29,6 +35,7 @@
   "devDependencies": {
     "@types/lodash-es": "^4.17.0",
     "docdash": "^0.4.0",
+    "eslint": "^4.19.1",
     "jquery": "^3.3.1",
     "jsdoc": "^3.5.5",
     "jsdom": "^11.10.0",
