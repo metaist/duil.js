@@ -1,8 +1,8 @@
 {
   "name": "duil",
-  "version": "0.1.4-PRE",
+  "version": "0.2.0",
   "description": "Tiny data-driven ui rendering framework.",
-  "keywords": ["tiny", "data", "ui", "loop", "template"],
+  "keywords": ["data-ui-loop", "html", "templates", "single-page-app"],
   "license": "MIT",
   "homepage": "https://github.com/metaist/duil.js",
   "bugs": {
