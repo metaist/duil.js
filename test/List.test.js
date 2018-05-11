@@ -4,7 +4,7 @@ const test = require('tape');
 const duil = require('../dist/duil');
 
 test('List', (t) => {
-  var list = duil.List();
+  var list = new duil.List();
 
   t.ok(list, 'empty list exists');
   t.same(list.data, []);
@@ -16,7 +16,7 @@ test('List', (t) => {
 
 test('basic ul', (t) => {
   var $dom = $('<ul id="my-list"><li></li></ul>');
-  var list = duil.List({
+  var list = new duil.List({
     $dom: $dom[0],
     selector: 'li'
   });
@@ -53,7 +53,7 @@ test('more complex list', (t) => {
   </div>
 </div>`);
 
-  var list = duil.List({
+  var list = new duil.List({
     $dom: $dom,
     selector: '.duelist',
 

@@ -2,7 +2,7 @@ const end_jsdom = require('jsdom-global')();
 const $ = require('jquery');
 global.$ = $; // for jQuery detection
 const test = require('tape');
-const duil = require('../dist/duil');
+const duil = require('../dist/duil'); // eslint-disable-line no-unused-vars
 
 test('$.set single', (t) => {
   const text = 'New text';

@@ -2,7 +2,7 @@ const test = require('tape');
 const duil = require('../dist/duil');
 
 test('Widget is not empty', (t) => {
-  var widget = duil.Widget();
+  var widget = new duil.Widget();
 
   t.ok(widget, 'widget exists');
   t.is(widget.name, undefined, 'unknown property is undefined');
@@ -22,8 +22,13 @@ test('Widget constructor', (t) => {
   t.end();
 });
 
-test('Widget.subclass', (t) => {
-  var NumberWidget = duil.Widget.subclass({val: 42});
+test('Widget subclassing', (t) => {
+  class NumberWidget extends duil.Widget {
+    constructor(props) {
+      super(Object.assign({val: 42}, props));
+    }
+  }
+
   var MyNumber = new NumberWidget();
   t.is(MyNumber.val, 42);
 
@@ -33,42 +38,43 @@ test('Widget.subclass', (t) => {
   t.end();
 });
 
-test('Widget.superclass', (t) => {
-  var WidgetA = duil.Widget.subclass({
-    name: 'WidgetA',
-    say: function (punct) {
-      return 'I am ' + this.name + (punct || '');
+test('Widget superclass', (t) => {
+  class WidgetA extends duil.Widget {
+    constructor(props) {
+      Object.assign(WidgetA.prototype, {name: 'WidgetA'});
+      super(props)
     }
-  });
+
+    say(punct) { return 'I am ' + this.name + (punct || ''); }
+  }
 
   var a = new WidgetA();
   t.is(a.say(), 'I am WidgetA');
 
-  var WidgetB = WidgetA.subclass({
-    punct: '!',
-
-    // @override
-    name: 'WidgetB',
-
-    // @override
-    say: function () {
-      return this.superclass('say', this.punct);
+  class WidgetB extends WidgetA {
+    constructor(props) {
+      Object.assign(WidgetB.prototype, {punct: '!', name: 'WidgetB'});
+      super(props);
     }
-  });
+
+    say() { return super.say(this.punct); } // @override
+  }
 
   var b = new WidgetB({name: 'Bob'});
   t.is(b.say(), 'I am Bob!');
 
-  var WidgetC = WidgetB.subclass({
-    // @override
-    name: 'WidgetC',
-
-   // @override
-   say: function (insult) {
-     return this.superclass(WidgetA, 'say', ', ' + insult) +
-            this.superclass('punct');
+  class WidgetC extends WidgetB {
+    constructor(props) {
+      Object.assign(WidgetC.prototype, {name: 'WidgetC'});
+      super(props);
     }
-  });
+
+    // @override
+    say(insult) {
+     return WidgetA.prototype.say.call(this, `, ${insult}${super.punct}`);
+     // return super.super.say(`, ${insult}${super.punct}`);
+    }
+  }
 
   var c = new WidgetC({name: 'Sparticus'});
   t.is(c.say('you fool'), 'I am Sparticus, you fool!');
@@ -90,13 +96,13 @@ test('Widget.init', (t) => {
 });
 
 test('Widget.render', (t) => {
-  var widget = duil.Widget({
+  var widget = new duil.Widget({
     model: 0,
     view: 'zero',
 
     // @override
     render: function () {
-      this.view = this.model === 0 ? 'zero' : 'non-zero';
+      this.view = 0 === this.model ? 'zero' : 'non-zero';
     }
   });
 

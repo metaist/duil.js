@@ -1,10 +1,6 @@
 import * as _ from './lodash';
 
-/**
-  A collection of functions for controlling DOM nodes.
-  @namespace dom
-  @memberof duil
-  */
+/* eslint func-style: ["error", "declaration"] */
 
 /**
   @memberof duil.dom
@@ -75,16 +71,24 @@ function append(parent, element) {
   @summary Set the text of an element.
   @param {Element|jQuery} element The element to append.
   @param {string} string The string to set.
-  @return {string|jQuery} The string that was set (jQuery: the element).
+  @return {Element|jQuery} The element that was affected.
   */
 function setText(element, string) {
-  return _.isElement(element) ?
-    (element.textContent = string) :
+  if (_.isElement(element)) {
+    element.textContent = string;
+  } else {
     element.text(string);
+  }// end if: text content set
+  return element;
 }
 
+export {find, findAll, remove, clone, append, setText}
 
-export { find, findAll, remove, clone, append, setText }
+/**
+  A collection of functions for controlling DOM nodes.
+  @namespace dom
+  @memberof duil
+  */
 export default {
   find: find,
   findAll: findAll,

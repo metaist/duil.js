@@ -15,13 +15,13 @@ const DUEL_VIEW = () => [
 
 const UPDATE_DUEL = function (view, model, index) {
   view.id = model.id;
-  view.winner = model.win === 1 ? model.a : model.b;
+  view.winner = 1 === model.win ? model.a : model.b;
   return view;
 };
 
 
 test('Group', (t) => {
-  var group = duil.Group();
+  var group = new duil.Group();
   t.ok(group, 'empty group exists');
   t.same(group.data, []);
   t.same(group.views, []);
@@ -30,7 +30,7 @@ test('Group', (t) => {
 });
 
 test('Group.key', (t) => {
-  const group = duil.Group({
+  const group = new duil.Group({
     data: DUEL_MODEL(),
     views: DUEL_MODEL(),
 
@@ -46,7 +46,7 @@ test('Group.key', (t) => {
 });
 
 test('Group.create', (t) => {
-  const group = duil.Group({
+  const group = new duil.Group({
     data: DUEL_MODEL(),
     views: DUEL_VIEW(),
 
@@ -72,7 +72,7 @@ test('Group.create', (t) => {
 });
 
 test('Group.remove', (t) => {
-  const group = duil.Group({
+  const group = new duil.Group({
     data: DUEL_MODEL(),
     views: DUEL_VIEW(),
 

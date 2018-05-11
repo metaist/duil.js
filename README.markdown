@@ -23,7 +23,7 @@ You already know HTML and JavaScript, why should you learn a new syntax just to 
 ## Example
 Here is a simple Hello World widget, taken from the [React] documentation:
 ```javascript
-var HelloMessage = duil.Widget({
+var HelloMessage = new duil.Widget({
   $dom: $('<div>'),
   name: '',
 
