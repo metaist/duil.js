@@ -75,8 +75,9 @@ const jQuery_set = function(attr, value) {
   });//end for: all DOM nodes applied
 };
 
-if (global.$ && global.$.extend && global.$.fn) {
-  global.$.extend(global.$.fn, {set: jQuery_set});
+var top = Function('return this')() || global;
+if (top.$ && top.$.extend && top.$.fn) {
+  top.$.extend(top.$.fn, {set: jQuery_set});
 }//end if: jQuery_set exposed only if jQuery (or similar substitute exists)
 
 export default jQuery_set;
