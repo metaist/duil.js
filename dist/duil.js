@@ -1,11 +1,11 @@
-/** duil v0.1.4-PRE | @copyright 2018 Metaist LLC <metaist.com> | @license MIT */
+/** duil v0.2.0 | @copyright 2018 Metaist LLC <metaist.com> | @license MIT */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
   typeof define === 'function' && define.amd ? define(['exports'], factory) :
   (factory((global.duil = {})));
 }(this, (function (exports) { 'use strict';
 
-  var version = "0.1.4-PRE";
+  var version = "0.2.0";
 
   /** Detect free variable `global` from Node.js. */
   var freeGlobal = typeof global == 'object' && global && global.Object === Object && global;
