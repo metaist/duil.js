@@ -9,7 +9,7 @@
 [![build][badge-travis]](https://travis-ci.org/metaist/duil.js)
 
 [Latest Release]: https://github.com/metaist/duil.js/releases/latest
-[Documentation]: https://github.com/metaist/duil.js/wiki
+[Documentation]: https://metaist.github.io/duil.js/
 [Issues]: https://github.com/metaist/duil.js/issues
 
 [badge-version]: https://img.shields.io/badge/version-0.2.0-blue.svg
