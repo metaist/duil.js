@@ -3,8 +3,8 @@
 
 **duil** (sounds like duel) is a simple JavaScript library for creating single page apps that react to changes in their underlying data. duil leverages the technologies you already know, like JavaScript and HTML, instead of making you learn a brand new syntax. With duil, you can create dynamic web pages with less code and cleaner abstractions.
 
-[![version][badge-version]](./CHANGELOG.md)
-[![license][badge-license]](./LICENSE.md)
+[![version][badge-version]](https://github.com/metaist/duil.js/blob/master/CHANGELOG.md)
+[![license][badge-license]](https://github.com/metaist/duil.js/blob/master/LICENSE.md)
 [![releases][badge-release]][Latest Release]
 [![build][badge-travis]](https://travis-ci.org/metaist/duil.js)
 
