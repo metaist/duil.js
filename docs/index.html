@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Home - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="duil.Widget.html">Widget</a><ul class='methods'><li data-type='method'><a href="duil.Widget.html#.subclass">subclass</a></li><li data-type='method'><a href="duil.Widget.html#superclass">superclass</a></li><li data-type='method'><a href="duil.Widget.html#init">init</a></li><li data-type='method'><a href="duil.Widget.html#render">render</a></li><li data-type='method'><a href="duil.Widget.html#set">set</a></li></ul></li><li><a href="duil.Group.html">Group</a><ul class='methods'><li data-type='method'><a href="duil.Group.html#.KEY_BY_INDEX">KEY_BY_INDEX</a></li><li data-type='method'><a href="duil.Group.html#.KEY_BY_ID">KEY_BY_ID</a></li><li data-type='method'><a href="duil.Group.html#key">key</a></li><li data-type='method'><a href="duil.Group.html#create">create</a></li><li data-type='method'><a href="duil.Group.html#update">update</a></li><li data-type='method'><a href="duil.Group.html#remove">remove</a></li><li data-type='method'><a href="duil.Group.html#render">render</a></li><li data-type='method'><a href="duil.Group.html#superclass">superclass</a></li><li data-type='method'><a href="duil.Group.html#init">init</a></li><li data-type='method'><a href="duil.Group.html#set">set</a></li></ul></li><li><a href="duil.List.html">List</a><ul class='methods'><li data-type='method'><a href="duil.List.html#init">init</a></li><li data-type='method'><a href="duil.List.html#create">create</a></li><li data-type='method'><a href="duil.List.html#update">update</a></li><li data-type='method'><a href="duil.List.html#remove">remove</a></li><li data-type='method'><a href="duil.List.html#render">render</a></li><li data-type='method'><a href="duil.List.html#key">key</a></li><li data-type='method'><a href="duil.List.html#superclass">superclass</a></li><li data-type='method'><a href="duil.List.html#set">set</a></li></ul></li></ul><h3>Externals</h3><ul><li><a href="external-_jQuery.fn_.html">jQuery.fn</a><ul class='methods'><li data-type='method'><a href="external-_jQuery.fn_.html#.set">set</a></li></ul></li></ul><h3>Namespaces</h3><ul><li><a href="duil.html">duil</a><ul class='members'><li data-type='member'><a href="duil.html#.VERSION">VERSION</a></li></ul></li><li><a href="duil.dom.html">dom</a><ul class='methods'><li data-type='method'><a href="duil.dom.html#.find">find</a></li><li data-type='method'><a href="duil.dom.html#.findAll">findAll</a></li><li data-type='method'><a href="duil.dom.html#.remove">remove</a></li><li data-type='method'><a href="duil.dom.html#.clone">clone</a></li><li data-type='method'><a href="duil.dom.html#.append">append</a></li><li data-type='method'><a href="duil.dom.html#.setText">setText</a></li></ul></li></ul>
+</nav>
+
+<div id="main">
+    
+
+    
+
+
+
+    
+
+
+
+
+
+
+
+
+
+    
+
+
+    <section class="readme">
+        <article><h1>duil: data + ui = loop</h1><p><a href="https://github.com/metaist/duil.js/releases/latest">Latest Release</a> - <a href="https://github.com/metaist/duil.js/wiki">Documentation</a> - <a href="https://github.com/metaist/duil.js/issues">Issues</a></p>
+<p><strong>duil</strong> (sounds like duel) is a simple JavaScript library for creating single page apps that react to changes in their underlying data. duil leverages the technologies you already know, like JavaScript and HTML, instead of making you learn a brand new syntax. With duil, you can create dynamic web pages with less code and cleaner abstractions.</p>
+<p><a href="https://travis-ci.org/metaist/duil.js"><img src="https://travis-ci.org/metaist/duil.js.svg?branch=master" alt="Build Status"></a></p>
+<h2>Why?</h2><p>You already know HTML and JavaScript, why should you learn a new syntax just to render templates and make components? You just need a something that updates when its data changes.</p>
+<h2>Example</h2><p>Here is a simple Hello World widget, taken from the <a href="https://reactjs.org/">React</a> documentation:</p>
+<pre class="prettyprint source lang-javascript"><code>var HelloMessage = duil.Widget({
+  $dom: $('&lt;div>'),
+  name: '',
+
+  //@override
+  render: function () {
+    this.$dom.text('Hello ' + this.name);
+    return this;
+  }
+});
+
+HelloMessage.set({name: 'John'});
+HelloMessage.set({name: 'John'}); // nothing new; no re-render</code></pre><p>Let's walk through this example.</p>
+<ol>
+<li>First, we construct a <code>duil.Widget</code> passing it the properties we want it to have.</li>
+<li>Next, we add two properties: <code>$dom</code> which holds a <code>&lt;div&gt;</code> we'll be rendering to and <code>name</code> to hold the name to display.</li>
+<li>We also add a method called <code>.render()</code> which will be called when any of the properties of the widget are changed using <code>.set()</code>. The actual rendering simply changes the text of the <code>&lt;div&gt;</code> to say <code>&quot;Hello&quot;</code> followed the <code>name</code>.</li>
+<li>Last, we set the <code>name</code> of the widget to <code>&quot;John&quot;</code> which triggers a <code>.render()</code>. Note that if we had set <code>name</code> to the same thing it was already set to, it would not call <code>.render()</code> again.</li>
+</ol>
+<h2>Goals &amp; Non-Goals</h2><ol>
+<li>The goal of duil is to make it easy to write simple single page web apps.</li>
+<li>Ease of use by the developer writing an app is a higher priority than insanely fast performance.</li>
+<li>Use of well-established syntax beats newfangled shiny thing.</li>
+<li>It is a non-goal to support very complicated web apps like Gmail and Google Docs.</li>
+</ol>
+<h2>Influenced By</h2><ul>
+<li><p><strong>2006</strong>: <a href="http://jquery.com/">jQuery</a> standardized DOM manipulation across browsers. This made controlling the DOM much more accessible and less fragile.</p>
+</li>
+<li><p><strong>2008</strong>: <a href="https://pure-js.com/">PURE</a> was one of the earliest examples I saw of using normal HTML for templating. It hooked into <a href="http://jquery.com/">jQuery</a>, but using the directives didn't feel quite right because I always ended up using jQuery to move around the DOM and set the data myself.</p>
+</li>
+<li><p><strong>2011</strong>: <a href="https://d3js.org/">D3</a> was my first exposure to data-driven visualizations and the idea that changes in data correspond to changes in what you see. Although you could use D3 for manipulating DOM nodes, it felt a little harder than jQuery.</p>
+</li>
+<li><p><strong>2013</strong>: <a href="https://reactjs.org/">React</a> popularized the idea of components that change when their underlying data changes. duil stems from this fundamental insight, but ditches the weird syntax.</p>
+</li>
+</ul>
+<h2>License</h2><p>Licensed under the <a href="http://opensource.org/licenses/MIT">MIT License</a>.</p></article>
+    </section>
+
+
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>

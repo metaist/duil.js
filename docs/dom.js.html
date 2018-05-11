@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>dom.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="duil.Widget.html">Widget</a><ul class='methods'><li data-type='method'><a href="duil.Widget.html#.subclass">subclass</a></li><li data-type='method'><a href="duil.Widget.html#superclass">superclass</a></li><li data-type='method'><a href="duil.Widget.html#init">init</a></li><li data-type='method'><a href="duil.Widget.html#render">render</a></li><li data-type='method'><a href="duil.Widget.html#set">set</a></li></ul></li><li><a href="duil.Group.html">Group</a><ul class='methods'><li data-type='method'><a href="duil.Group.html#.KEY_BY_INDEX">KEY_BY_INDEX</a></li><li data-type='method'><a href="duil.Group.html#.KEY_BY_ID">KEY_BY_ID</a></li><li data-type='method'><a href="duil.Group.html#key">key</a></li><li data-type='method'><a href="duil.Group.html#create">create</a></li><li data-type='method'><a href="duil.Group.html#update">update</a></li><li data-type='method'><a href="duil.Group.html#remove">remove</a></li><li data-type='method'><a href="duil.Group.html#render">render</a></li><li data-type='method'><a href="duil.Group.html#superclass">superclass</a></li><li data-type='method'><a href="duil.Group.html#init">init</a></li><li data-type='method'><a href="duil.Group.html#set">set</a></li></ul></li><li><a href="duil.List.html">List</a><ul class='methods'><li data-type='method'><a href="duil.List.html#init">init</a></li><li data-type='method'><a href="duil.List.html#create">create</a></li><li data-type='method'><a href="duil.List.html#update">update</a></li><li data-type='method'><a href="duil.List.html#remove">remove</a></li><li data-type='method'><a href="duil.List.html#render">render</a></li><li data-type='method'><a href="duil.List.html#key">key</a></li><li data-type='method'><a href="duil.List.html#superclass">superclass</a></li><li data-type='method'><a href="duil.List.html#set">set</a></li></ul></li></ul><h3>Externals</h3><ul><li><a href="external-_jQuery.fn_.html">jQuery.fn</a><ul class='methods'><li data-type='method'><a href="external-_jQuery.fn_.html#.set">set</a></li></ul></li></ul><h3>Namespaces</h3><ul><li><a href="duil.html">duil</a><ul class='members'><li data-type='member'><a href="duil.html#.VERSION">VERSION</a></li></ul></li><li><a href="duil.dom.html">dom</a><ul class='methods'><li data-type='method'><a href="duil.dom.html#.find">find</a></li><li data-type='method'><a href="duil.dom.html#.findAll">findAll</a></li><li data-type='method'><a href="duil.dom.html#.remove">remove</a></li><li data-type='method'><a href="duil.dom.html#.clone">clone</a></li><li data-type='method'><a href="duil.dom.html#.append">append</a></li><li data-type='method'><a href="duil.dom.html#.setText">setText</a></li></ul></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">dom.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import * as _ from './lodash';
+
+/**
+  A collection of functions for controlling DOM nodes.
+  @namespace dom
+  @memberof duil
+  */
+
+/**
+  @memberof duil.dom
+  @summary Find the first element within another element using a CSS query.
+  @param {Element|jQuery} element The element within which to search.
+  @param {string} query The CSS query.
+  @return {Element|null|jQuery} The result of the query.
+  */
+function find(element, query) {
+  return _.isElement(element) ?
+    element.querySelector(query) :
+    element.find(query).eq(0);
+}
+
+/**
+  @memberof duil.dom
+  @summary Find all the elements within another element using a CSS query.
+  @param {Element|jQuery} element The element within which to search.
+  @param {string} query The CSS query.
+  @return {Element[]|jQuery} The results of the query.
+  */
+function findAll(element, query) {
+  return _.isElement(element) ?
+    Array.from(element.querySelectorAll(query)) :
+    element.find(query);
+}
+
+/**
+  @memberof duil.dom
+  @summary Remove an element from the DOM.
+  @param {Element|jQuery} element The element to remove.
+  @return {Element|jQuery} The element that was removed.
+  */
+function remove(element) {
+  if (!element) { return null; }
+  return _.isElement(element) ?
+    element.parentElement.removeChild(element) :
+    element.remove();
+}
+
+/**
+  @memberof duil.dom
+  @summary Clone an element.
+  @param {Element|jQuery} element The element to clone.
+  @return {Element|jQuery} The cloned element.
+  */
+function clone(element) {
+  return _.isElement(element) ?
+    element.cloneNode(true) :
+    element.clone();
+}
+
+/**
+  @memberof duil.dom
+  @summary Append an element to a parent.
+  @param {Element|jQuery} parent The element to append into.
+  @param {Element|jQuery} element The element to append.
+  @return {Element|jQuery} The element that was appended (jQuery: the parent).
+  */
+function append(parent, element) {
+  return _.isElement(element) ?
+    parent.appendChild(element) :
+    parent.append(element);
+}
+
+/**
+  @memberof duil.dom
+  @summary Set the text of an element.
+  @param {Element|jQuery} element The element to append.
+  @param {string} string The string to set.
+  @return {string|jQuery} The string that was set (jQuery: the element).
+  */
+function setText(element, string) {
+  return _.isElement(element) ?
+    (element.textContent = string) :
+    element.text(string);
+}
+
+
+export { find, findAll, remove, clone, append, setText }
+export default {
+  find: find,
+  findAll: findAll,
+  remove: remove,
+  clone: clone,
+  append: append,
+  setText: setText
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>

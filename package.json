@@ -2,26 +2,28 @@
   "name": "duil",
   "version": "0.1.4-PRE",
   "description": "Tiny data-driven ui rendering framework.",
-  "main": "dist/duil.js",
-  "author": {
-    "name": "Metaist LLC",
-    "url": "metaist.com"
-  },
+  "keywords": ["tiny", "data", "ui", "loop", "template"],
   "license": "MIT",
   "homepage": "https://github.com/metaist/duil.js",
+  "bugs": {
+    "url": "https://github.com/metaist/duil.js/issues"
+  },
   "repository": {
     "type": "git",
     "url": "git://github.com/metaist/duil.js.git"
   },
-  "bugs": {
-    "url": "https://github.com/metaist/duil.js/issues"
+  "author": {
+    "name": "Metaist LLC",
+    "url": "metaist.com"
   },
+  "main": "dist/duil.js",
   "scripts": {
     "dev": "./build.js -w",
-    "prepare": "yarn build && yarn test && yarn doc",
+    "clean": "rm -rf ./docs; rm -rf dist",
+    "prepare": "yarn build && yarn test && yarn docs",
     "build": "./build.js",
     "test": "tape test/**/*.js | tap-summary",
-    "doc": "jsdoc -c jsdoc.json"
+    "docs": "jsdoc -c jsdoc.json"
   },
   "dependencies": {},
   "devDependencies": {

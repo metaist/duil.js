@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>jquery.duil.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="duil.Widget.html">Widget</a><ul class='methods'><li data-type='method'><a href="duil.Widget.html#.subclass">subclass</a></li><li data-type='method'><a href="duil.Widget.html#superclass">superclass</a></li><li data-type='method'><a href="duil.Widget.html#init">init</a></li><li data-type='method'><a href="duil.Widget.html#render">render</a></li><li data-type='method'><a href="duil.Widget.html#set">set</a></li></ul></li><li><a href="duil.Group.html">Group</a><ul class='methods'><li data-type='method'><a href="duil.Group.html#.KEY_BY_INDEX">KEY_BY_INDEX</a></li><li data-type='method'><a href="duil.Group.html#.KEY_BY_ID">KEY_BY_ID</a></li><li data-type='method'><a href="duil.Group.html#key">key</a></li><li data-type='method'><a href="duil.Group.html#create">create</a></li><li data-type='method'><a href="duil.Group.html#update">update</a></li><li data-type='method'><a href="duil.Group.html#remove">remove</a></li><li data-type='method'><a href="duil.Group.html#render">render</a></li><li data-type='method'><a href="duil.Group.html#superclass">superclass</a></li><li data-type='method'><a href="duil.Group.html#init">init</a></li><li data-type='method'><a href="duil.Group.html#set">set</a></li></ul></li><li><a href="duil.List.html">List</a><ul class='methods'><li data-type='method'><a href="duil.List.html#init">init</a></li><li data-type='method'><a href="duil.List.html#create">create</a></li><li data-type='method'><a href="duil.List.html#update">update</a></li><li data-type='method'><a href="duil.List.html#remove">remove</a></li><li data-type='method'><a href="duil.List.html#render">render</a></li><li data-type='method'><a href="duil.List.html#key">key</a></li><li data-type='method'><a href="duil.List.html#superclass">superclass</a></li><li data-type='method'><a href="duil.List.html#set">set</a></li></ul></li></ul><h3>Externals</h3><ul><li><a href="external-_jQuery.fn_.html">jQuery.fn</a><ul class='methods'><li data-type='method'><a href="external-_jQuery.fn_.html#.set">set</a></li></ul></li></ul><h3>Namespaces</h3><ul><li><a href="duil.html">duil</a><ul class='members'><li data-type='member'><a href="duil.html#.VERSION">VERSION</a></li></ul></li><li><a href="duil.dom.html">dom</a><ul class='methods'><li data-type='method'><a href="duil.dom.html#.find">find</a></li><li data-type='method'><a href="duil.dom.html#.findAll">findAll</a></li><li data-type='method'><a href="duil.dom.html#.remove">remove</a></li><li data-type='method'><a href="duil.dom.html#.clone">clone</a></li><li data-type='method'><a href="duil.dom.html#.append">append</a></li><li data-type='method'><a href="duil.dom.html#.setText">setText</a></li></ul></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">jquery.duil.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import * as _ from './lodash';
+
+/**
+  @external "jQuery.fn"
+  @description
+  * The [jQuery plugin](http://learn.jquery.com/plugins/) namespace.
+  */
+
+/**
+  @summary
+  Set attributes of the selected DOM objects if they haven't changed.
+
+  @description
+  * `attr` is one of:
+  *   - `html`
+  *   - `text`
+  *   - `val`
+  *   - `attr:[name]`
+  *   - `css:[name]`
+  *   - `data:[name]`
+  *   - `prop:[name]`
+  *
+  * These are called every time (i.e. no value check):
+  *   - `addClass`
+  *   - `removeClass`
+  *   - `toggleClass:[name]`
+
+  @function external:"jQuery.fn".set
+  @param {String} [attr] The attribute to set.
+  @param {*|Object} value The attribute value or a set of attribute/values.
+  @returns {jQuery} The selected jQuery object for chaining.
+  @example
+  * $('&lt;div>').set('html', 'New text');
+  * $('&lt;input />').set({
+  *   'val': 'New value',
+  *   'prop:disabled': true
+  * });
+  */
+const jQuery_set = function(attr, value) {
+  var vals = {};
+  var rules = [];
+
+  if (_.isPlainObject(attr)) { // multiple
+    vals = attr;
+  } else { // single
+    vals[attr] = value;
+  }//end if: have values
+
+  rules = _.map(vals, function (val, fn) {
+    var name = null;
+    var pos = fn.indexOf(':');
+    if (-1 !== pos) {
+      name = fn.substr(pos + 1);
+      fn = fn.substring(0, pos);
+    }//end if: split on first colon
+
+    return {
+      fn: fn,
+      name: name,
+      val: _.isFunction(val) ? val : _.constant(val)
+    };
+  });
+
+  return this.each(function (index, dom) {
+    var $dom = $(dom);
+    _.forEach(rules, function (rule) {
+      var fn = _.bind($dom[rule.fn], $dom);
+      if (rule.name) { fn = _.partial(fn, rule.name); }
+
+      var is_class = _.endsWith(rule.fn, 'Class');
+      var prev = is_class ? $dom.attr('class') : fn();
+      var val = _.bind(rule.val, dom)(index, prev);
+      if (is_class || prev !== val) { fn(val); }
+    });//end for: all rules applied
+  });//end for: all DOM nodes applied
+};
+
+if (global.$ &amp;&amp; global.$.extend &amp;&amp; global.$.fn) {
+  global.$.extend(global.$.fn, {set: jQuery_set});
+}//end if: jQuery_set exposed only if jQuery (or similar substitute exists)
+
+export default jQuery_set;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>
