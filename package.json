@@ -26,9 +26,10 @@
     "dev": "./build.js -w",
     "all": "yarn clean && yarn lint && yarn build && yarn test && yarn docs",
     "clean": "rm -rf ./docs; rm -rf dist",
-    "lint": "eslint src/*.js test/*.js",
+    "lint": "eslint src/*.js test/**/*.js",
     "build": "./build.js",
-    "test": "tape test/**/*.js | tap-summary",
+    "test": "tape test/*.js | tap-summary",
+    "perf": "tape test/perf/*.js | tap-summary",
     "docs": "jsdoc -c jsdoc.json"
   },
   "dependencies": {},
