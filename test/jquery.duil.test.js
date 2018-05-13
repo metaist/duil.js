@@ -1,8 +1,18 @@
+try { delete require.cache[require.resolve('../dist/duil.js')]; }
+catch (e) { /* empty */ }
+
 const end_jsdom = require('jsdom-global')();
 const $ = require('jquery');
 global.$ = $; // for jQuery detection
 const test = require('tape');
 const duil = require('../dist/duil'); // eslint-disable-line no-unused-vars
+
+test('$.set installed', (t) => {
+  t.ok($.extend);
+  t.ok($.fn);
+  t.ok($.fn.set);
+  t.end();
+});
 
 test('$.set single', (t) => {
   const text = 'New text';
@@ -21,7 +31,6 @@ test('$.set multiple', (t) => {
     'prop:disabled': true
   };
   const $dom = $('<input />').set(vals);
-
 
   t.is($dom.length, 1, 'DOM exists');
   t.is($dom.val(), vals.val, 'should match .val()');

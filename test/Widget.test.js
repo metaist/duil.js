@@ -72,7 +72,6 @@ test('Widget superclass', (t) => {
     // @override
     say(insult) {
      return WidgetA.prototype.say.call(this, `, ${insult}${super.punct}`);
-     // return super.super.say(`, ${insult}${super.punct}`);
     }
   }
 

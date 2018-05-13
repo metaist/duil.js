@@ -16,4 +16,4 @@ export {default as Group} from './Group';
 export {default as List} from './List';
 export {default as dom} from './dom';
 
-import './jquery.duil';
+export {default as $set} from './jquery.duil';
