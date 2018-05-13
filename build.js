@@ -33,7 +33,8 @@ const output = {
   format: 'umd',
   file: dest,
   name: PKG_NAME,
-  banner: banner
+  banner: banner,
+  outro: `exports._build = "${new Date().toISOString()}";`
 };
 
 // Generate configuration.
