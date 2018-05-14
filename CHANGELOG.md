@@ -10,7 +10,7 @@ The format is based on [Keep a Changelog] and this project adheres to [Semantic 
 [Unreleased]: https://github.com/metaist/duil.js/compare/0.3.0...HEAD
 ## [Unreleased]
 **Compatability Warnings**
-_None_
+- _None_
 
 **Added**
 - add `duil.$set()` for the jQuery `.set()`
