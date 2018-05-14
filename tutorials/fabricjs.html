@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>FabricJS Example</title>
+  <body>
+    <canvas id="canvas" style="border: 1px solid black;"></canvas>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/1.7.22/fabric.min.js"></script>
+    <script src="../dist/duil.js"></script>
+    <script>
+      /* global fabric: true, duil: true */
+      const squares = new duil.Group({
+        canvas: new fabric.Canvas('canvas'),
+
+        create: function (model, index) {
+          const view = new fabric.Rect(model);
+          this.canvas.add(view);
+          return view;
+        },
+
+        update: function (view, model, index) {
+          Object.assign(view, model);
+          return view;
+        },
+
+        remove: function (views) {
+          views.forEach(view => this.canvas.remove(view));
+          return this;
+        },
+
+        render: function () {
+          this.canvas.renderAll();
+          this.invoke(duil.Group, 'render');
+        }
+      });
+
+      squares.set({data: [
+        {height: 10, width: 10, top: 10, left: 10},
+        {height: 10, width: 10, top: 50, left: 50}
+      ]});
+    </script>
+  </body>
+</html>
