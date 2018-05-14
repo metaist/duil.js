@@ -1,11 +1,11 @@
-/** duil v0.3.0 | @copyright 2018 Metaist LLC <metaist.com> | @license MIT */
+/** duil v0.3.1-dev | @copyright 2018 Metaist LLC <metaist.com> | @license MIT */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
   typeof define === 'function' && define.amd ? define(['exports'], factory) :
   (factory((global.duil = {})));
 }(this, (function (exports) { 'use strict';
 
-  var version = "0.3.0";
+  var version = "0.3.1-dev";
 
   /** Detect free variable `global` from Node.js. */
   var freeGlobal = typeof global == 'object' && global && global.Object === Object && global;
@@ -3967,6 +3967,17 @@
     }
 
     /**
+      @summary Invoke a method from another class in the context of this widget.
+      @param {Widget} parent The class with the method to invoke.
+      @param {string} name The name of the method to invoke.
+      @param {...*} args The arguments to pass to the method.
+      @returns {*} Returns the result of invoking the method.
+      */
+    invoke(parent, name, ...args) {
+      return parent.prototype[name].apply(this, args);
+    }
+
+    /**
       @summary Initialize the widget.
       @description
       * This method is called when the widget is constructed. Instances will often
@@ -4450,6 +4461,26 @@
     * The [jQuery plugin](http://learn.jquery.com/plugins/) namespace.
     */
 
+  // eslint-disable-next-line no-new-func
+  const jq = (Function('return this')() || global).$;
+
+  /**
+    @private
+    */
+  const split = (val, key) => {
+    const [fn, name] = key.split(/:(.*)/, 2); // split on first colon
+    const $fn = name ?
+      // eslint-disable-next-line no-invalid-this
+      function (...args) { return jq.fn[fn].bind(this)(name, ...args); } :
+      jq.fn[fn];
+
+    return {
+      fn: $fn, // getter / setter
+      isClass: fn.endsWith('Class'),
+      val: isFunction(val) ? val : () => val // value function
+    };
+  };
+
   /**
     @summary Set attributes of the selected DOM objects if they haven't changed.
     @description
@@ -4478,40 +4509,27 @@
     *   'prop:disabled': true
     * });
     */
-  const jQuery_set = function (attr, value) {
-    const split = (val, key) => {
-      const [fn, name] = key.split(/:(.*)/, 2); // split on first colon
-      return {
-        // the property getter / setter
-        fn: fn, name: name,
-        isClass: fn.endsWith('Class'),
-        val: isFunction(val) ? val : () => val // the value to set
-      };
-    };
+  const $set = function (attr, value) {
     const rules = isPlainObject(attr) ?
       map(attr, split) : [split(value, attr)];
 
     // eslint-disable-next-line no-invalid-this
     return this.each((index, dom) => {
-      var $dom = $(dom); // eslint-disable-line no-undef
-      forEach(rules, (rule) => {
-        const fn = rule.name ?
-          (...args) => $dom[rule.fn].bind($dom)(rule.name, ...args) :
-          $dom[rule.fn].bind($dom);
+      const $dom = jq(dom);
+      const className = dom.getAttribute('class');
 
+      forEach(rules, (rule) => {
         // get the previous and next values for the property
-        const prev = rule.isClass ? dom.getAttribute('class') : fn();
+        const fn = rule.fn.bind($dom);
+        const prev = rule.isClass ? className : fn();
         const next = rule.val.bind(dom)(index, prev);
         if (rule.isClass || prev !== next) { fn(next); } // change if different
       });// end for: all rules applied
     });// end for: all DOM nodes applied
   };
 
-  // eslint-disable-next-line no-new-func
-  var top = Function('return this')() || global;
-  if (top.$ && top.$.extend && top.$.fn) {
-    top.$.extend(top.$.fn, {set: jQuery_set});
-  }// end if: exposed only if jQuery-like API exists
+  // only install if jQuery-like API detected
+  if (jq && jq.extend && jq.fn) { jq.fn.extend({set: $set}); }
 
   /**
     Data + UI + Loop = duil
@@ -4523,7 +4541,10 @@
   exports.Group = Group;
   exports.List = List;
   exports.dom = dom;
+  exports.$set = $set;
 
   Object.defineProperty(exports, '__esModule', { value: true });
+
+  exports._build = "2018-05-14T03:06:05.746Z";
 
 })));

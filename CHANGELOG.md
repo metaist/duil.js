@@ -9,7 +9,14 @@ The format is based on [Keep a Changelog] and this project adheres to [Semantic 
 ---
 [Unreleased]: https://github.com/metaist/duil.js/compare/0.3.0...HEAD
 ## [Unreleased]
+**Compatability Warnings**
 _None_
+
+**Added**
+- add `duil.$set()` for the jQuery `.set()`
+- add `duil._build` for internal build date/time for debugging
+- #18: performance test
+- #19: `Widget.invoke()` for calling prototype functions in the context of a given widget
 
 ---
 [0.30]: https://github.com/metaist/duil.js/compare/0.2.0...0.3.0
@@ -35,7 +42,9 @@ _None_
 [0.2.0]: https://github.com/metaist/duil.js/compare/0.1.3...0.2.0
 ## [0.2.0] - 2018-05-11
 **Compatability Warnings**
+- `duil.List.add()` renamed to `duil.List.create()`
 - `duil.List.update()` now accepts arguments in a different in order: `(view, data, index)` instead of `(data, index, view)`.
+- both `duil.List.create()` and `duil.List.update()` return the `view` instead of the widget (`this`).
 
 **Added**
 - #3: add unit tests using `tape`
@@ -45,6 +54,7 @@ _None_
 **Changed**
 - `duil.List` now uses `duil.dom` to handle DOM `Element` and `jQuery` transparently.
 - duil can now be run with zero dependencies. The relevant lodash functions are baked in and jQuery is completely optional.
+- change `duil.List.add()` to `duil.List.create()`; it also returns the view instead of `this`.
 
 **Removed**
 - `duil.List.items()` this is no longer needed because the template is removed from the DOM manually and views are refreshed immediately at the start of `.render()`.
