@@ -19,7 +19,7 @@ _None_
 - #19: `Widget.invoke()` for calling prototype functions in the context of a given widget
 
 ---
-[0.30]: https://github.com/metaist/duil.js/compare/0.2.0...0.3.0
+[0.3.0]: https://github.com/metaist/duil.js/compare/0.2.0...0.3.0
 ## [0.3.0] - 2018-05-11
 **Compatability Warnings**
 - `duil.Widget` and its subclasses are now proper ES6 classes so `Widget.subclass` and `Widget.superclass` have been removed. The `new` keyword is now **required** when creating `duil.Widget` and any of its subclasses.
