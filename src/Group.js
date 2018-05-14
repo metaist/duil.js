@@ -24,11 +24,7 @@ import Widget from './Widget';
 */
 class Group extends Widget {
   constructor(props) {
-    Object.assign(Group.prototype, {
-      data: [],
-      views: []
-    });
-    super(props);
+    super(Object.assign({data: [], views: []}, props));
   }
 
   /**

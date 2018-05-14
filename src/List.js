@@ -32,12 +32,11 @@ import Group from './Group';
   */
 class List extends Group {
   constructor(props) {
-    Object.assign(List.prototype, {
+    super(Object.assign({
       $dom: null,
       $tmpl: null,
       selector: 'li'
-    });
-    super(props);
+    }, props));
   }
 
   /**
