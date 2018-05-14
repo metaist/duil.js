@@ -45,13 +45,13 @@ const config = mode => {
     case 'in_min':
       return Object.assign({}, input, {plugins: plugins_min});
     case 'out_min':
-      return Object.assign({}, output, {file: dest_min});
+      return Object.assign({}, output, {file: dest_min, sourcemap: true});
     case 'watch':
       return Object.assign({}, input, {output: output});
     case 'watch_min':
       return Object.assign({}, input, {
         plugins: plugins_min,
-        output: Object.assign({}, output, {file: dest_min})
+        output: Object.assign({}, output, {file: dest_min, sourcemap: true})
       });
   }
 };
