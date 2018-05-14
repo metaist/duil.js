@@ -6,9 +6,8 @@ import * as _ from './lodash';
   @description
   * The [jQuery plugin](http://learn.jquery.com/plugins/) namespace.
   */
+const jq = Function('return this')().$; // eslint-disable-line no-new-func
 
-// eslint-disable-next-line no-new-func
-const jq = (Function('return this')() || global).$;
 
 /**
   @private

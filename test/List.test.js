@@ -1,11 +1,11 @@
-try { delete require.cache[require.resolve('../dist/duil.js')]; }
+try { delete require.cache[require.resolve('../dist/duil.min.js')]; }
 catch (e) { /* empty */ }
 
 const end_jsdom = require('jsdom-global')();
 const $ = require('jquery');
 global.$ = $; // for jQuery detection
 const test = require('tape');
-const duil = require('../dist/duil');
+const duil = require('../dist/duil.min');
 
 test('List', (t) => {
   var list = new duil.List();
