@@ -1,5 +1,5 @@
 const test = require('tape');
-const duil = require('../dist/duil');
+const duil = require('../dist/duil.min');
 
 const DUEL_MODEL = () => [
   {id: 1777, a: 'Button Gwinnett', b: 'Lachlan McIntosh', win: 2},
