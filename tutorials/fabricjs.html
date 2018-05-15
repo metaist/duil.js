@@ -13,22 +13,27 @@
       const squares = new duil.Group({
         canvas: new fabric.Canvas('canvas'),
 
+        // @override
         create: function (model, index) {
           const view = new fabric.Rect(model);
           this.canvas.add(view);
+          this.views.splice(index, 0, view);
           return view;
         },
 
+        // @override
         update: function (view, model, index) {
           Object.assign(view, model);
           return view;
         },
 
+        // @override
         remove: function (views) {
           views.forEach(view => this.canvas.remove(view));
           return this;
         },
 
+        // @override
         render: function () {
           this.canvas.renderAll();
           this.invoke(duil.Group, 'render');
