@@ -65,9 +65,10 @@ class List extends Group {
     @returns {Element|jQuery} Returns the new element.
     */
   create(model, index) {
-    var view = this.update(DOM.clone(this.$tmpl), model, index);
+    const view = this.update(DOM.clone(this.$tmpl), model, index);
     DOM.append(this.$dom, view);
-    this.views.splice(index, 0, view);
+    // NOTE: we do not splice the view into this.views here because it will be
+    // refreshed at the start of render.
     return view;
   }
 

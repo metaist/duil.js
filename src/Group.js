@@ -71,7 +71,7 @@ class Group extends Widget {
     @returns {Object} Returns the newly-created view.
    */
   create(model, index) {
-    var view = this.update({}, model, index);
+    const view = this.update({}, model, index);
     this.views.splice(index, 0, view);
     return view;
   }
@@ -119,14 +119,14 @@ class Group extends Widget {
     @returns {duil.Group} Returns the group for chaining.
    */
   render() {
-    var views = _.map(this.data, (model, index) => {
-      var view = this.key(model, index);
+    const views = _.map(this.data, (model, index) => {
+      const view = this.key(model, index);
       return view ?
         this.update(view, model, index) :
         this.create(model, index);
     });
 
-    var untouched = _.differenceWith(this.views, views, _.isEqual);
+    const untouched = _.differenceWith(this.views, views, _.isEqual);
     this.remove(untouched);
     return this;
   }
