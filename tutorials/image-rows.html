@@ -1,0 +1,204 @@
+<!doctype html>
+<html><head>
+  <meta charset="utf-8" />
+  <title>Image Rows Example</title>
+  <style>
+    .hidden { display: none; }
+
+    .row {
+      margin: 0;
+      padding: 0.25rem;
+      display: flex;
+      flex-direction: row;
+      border-bottom: 1px solid #ccc;
+    }
+
+    .no-email { border: 1px solid black; }
+    .gravatar {
+      width: 50px;
+      min-height: 50px;
+      padding: 0;
+      margin: 0;
+    }
+
+    .images { margin-left: 1rem; }
+    .images img { padding-left: 0.5rem; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="row">
+      <div class="gravatar">
+        <img class="gravicon" src="" />
+      </div>
+
+      <div class="images">
+        <div class="blank"></div>
+        <img src="" />
+      </div>
+    </div>
+  </div>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/mazondo/gravatarjs/gravatar.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/metaist/duil.js/dist/duil.min.js"></script>
+<script>
+  /* global $:true, duil:true, gravatar:true */
+
+  /**
+    @description
+    Construct a duil.List for the images inside of each row. We do this first
+    because duil.List will remove the HTML template when it is defined, so we
+    want to remove the inner-most template first.
+  */
+  var imageList = new duil.List({
+
+    /**
+      @description
+      When initializing the list, you should start by specifying the container
+      into which the template will be rendered.
+
+      Note that we will be chaging this property together with the widget data
+      in order to get the widget to render new data in a different scope.
+
+      @override
+      @property {jQuery} $dom The container for the images.
+      */
+    $dom: $('.images'),
+
+    /**
+      @description
+      If $dom is set, but $tmpl isn't, then the selector is used for grabbing
+      the template out of the DOM.
+
+      @override
+      @property {string} selector The query selector for getting all of the
+        images within the container.
+      */
+    selector: 'img',
+
+    /**
+      @description
+      Now we define how the data provided to us in the model should update
+      the DOM.
+
+      @override
+      @param {jQuery} $img The DOM node to update.
+      @param {Object} image The data model.
+      @param {number} index The model index.
+      @returns {jQuery} The rendered DOM.
+      */
+    update: function ($img, image, index) {
+      // Update the image src and title attributes. We are assuming these are
+      // always present.
+      $img.set({
+        'attr:src': image.path,
+        'attr:title': image.timestamp
+      });
+
+      // Return the rendered DOM.
+      return $img;
+    }
+  });
+
+  /**
+    @description
+    The list of users is the top-level list of users. Each row has an
+    optional gravatar and list of images (managed by imageList).
+  */
+  var userList = new duil.List({
+
+    /**
+      @description
+      Now we define the behavior of the outer widget.
+
+      @override
+      @property {jQuery} $dom The container into which rows will be rendered.
+      */
+    $dom: $('.container'),
+
+    /**
+      @description
+      And we specify the selector for the outside widget.
+
+      @override
+      @property {string} selector The query selector for the rows.
+      */
+    selector: '.row',
+
+    /**
+      @description
+      Here we define the rules for updating a single row. First, we update the
+      gravicon. If there's no email address, then hide the image.
+
+      Next, we set the imageList widget data to be the images and we set it's
+      container to be the div inside this template. This will cause the
+      imageList widget to re-render in the context of this div.
+
+      Finally, we return the properly rendered view.
+
+      @override
+      @param {jQuery} $row The row to update.
+      @param {Object} user The user data model.
+      @param {number} index The index of the model.
+      */
+    update: function ($row, user, index) {
+      // We walk through our template and set properties as appropriate.
+      $row
+        .find('.gravatar') // Find the outside div for the gravatar icon.
+          .set({ // Add a border if there's no email and we set the tooltip.
+            'toggleClass:no-email': !user.email,
+            'attr:title': user.email ? user.email : 'No email address'
+          })
+        .end() // Bump our context back up to the whole row.
+        .find('.gravicon') // Find the image itself.
+          .set({ // Hide the image if there's no email and update the image src.
+            'toggleClass:hidden': !user.email,
+            'attr:src': user.email ? gravatar(user.email) : ''
+          })
+        .end();
+
+      // Now render the images for this user. Set the context to the images div
+      // within the row and set the data to the user images.
+      imageList.set({
+        $dom: $row.find('.images'),
+        data: user.images
+      });
+
+      // Return the rendered row.
+      return $row;
+    }
+  });
+
+  // We define some users.
+  const users = [{
+    // A user with no email address and no images.
+    email: '',
+    images: []
+  }, {
+    // A user with an email address, but no images.
+    email: 'example@example.com',
+    images: []
+  }, {
+    // A user with an image, but no email address.
+    email: '',
+    images: [{
+      path: 'http://via.placeholder.com/50x50',
+      timestamp: '2018-05-15T00:00:00.000Z'
+    }]
+  }, {
+    // A user with an email address and images.
+    email: 'metaist+duil@metaist.com',
+    images: [{
+      path: 'http://via.placeholder.com/50x50',
+      timestamp: '2018-05-15T00:00:00.000Z'
+    }, {
+      path: 'http://via.placeholder.com/100x50',
+      timestamp: '2018-05-15T00:00:00.000Z'
+    }]
+  }];
+
+  // Now we set the userList data to the users we created.
+  userList.set({data: users});
+</script>
+</body></html>
