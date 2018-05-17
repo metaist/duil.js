@@ -8,7 +8,7 @@ _This document is a work in progress._
 The final steps of a release should take place on a branch with the name `release-x.y.z` where `x.y.z` is the [Semantic Version] of the release.
 
 ```bash
-git checkout -b release-X.Y.Z
+git checkout -b release-x.y.z
 ```
 
 [Semantic Version]: http://semver.org/spec/v2.0.0.html
@@ -67,4 +67,4 @@ git checkout master
 You've successfully made a release.
 
 ### Post-Release Version Bump
-Update `package.json` and add a `-dev` to the release so that future builds indicate that this is the snapshot version and not a released version.
+Update `package.json` and add a `-dev` to the `version` field to indicate that this is now the snapshot version and not a released version.
