@@ -55,6 +55,13 @@ git push origin production
 git checkout master
 ```
 
+### Publish on `npm`
+```bash
+yarn publish
+```
+
+For the new version number, simply re-type the prompted version number.
+
 ### Create a GitHub Release
 1. [Draft a new release](https://github.com/metaist/duil.js/releases/new)
 2. Select the tag you just pushed.
