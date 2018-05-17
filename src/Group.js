@@ -58,7 +58,6 @@ class Group extends Widget {
     @param {number} index The index of the model.
     @returns {Object} Returns the view or `null` if none is found.
     */
-  // eslint-disable-next-line class-methods-use-this
   key(model, index) {
     return index < this.views.length ? this.views[index] : null;
   }

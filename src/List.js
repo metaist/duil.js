@@ -48,10 +48,27 @@ class List extends Group {
     @returns {duil.List} The widget itself for chaining.
   */
   init() {
-    if (this.$dom && !this.$tmpl) {
-      this.$tmpl = DOM.remove(DOM.find(this.$dom, this.selector));
-    }// end if: extracted template from container
+    if (this.$dom && this.selector) {
+      if (!this.$tmpl) {
+        this.$tmpl = DOM.remove(DOM.find(this.$dom, this.selector));
+      }// end if: extracted template from container
+      this.views = DOM.findAll(this.$dom, this.selector);
+    }// end if: initialized views
     return this;
+  }
+
+  /**
+    @summary Get the view that corresponds to the given model.
+    @description
+    * For `duil.List`, the views may either be a jQuery object or a plain array.
+
+    @override
+    @param {*} model The model whose view we want.
+    @param {number} index The index of the model.
+    @returns {Element|jQuery} Returns the view or `null` if none is found.
+    */
+  key(model, index) {
+    return index < this.views.length ? DOM.getIndex(this.views, index) : null;
   }
 
   /**
@@ -67,8 +84,7 @@ class List extends Group {
   create(model, index) {
     const view = this.update(DOM.clone(this.$tmpl), model, index);
     DOM.append(this.$dom, view);
-    // NOTE: we do not splice the view into this.views here because it will be
-    // refreshed at the start of render.
+    DOM.insert(this.views, index, view);
     return view;
   }
 
@@ -91,10 +107,11 @@ class List extends Group {
   /**
     @summary Remove a DOM object.
 
-    @param {jQuery} views The DOM objects to remove.
+    @param {Element[]|jQuery} views The DOM objects to remove.
     @returns {duil.List} The widget itself for chaining.
     */
   remove(views) {
+    this.invoke(Group, 'remove', views);
     _.forEach(views, DOM.remove);
     return this;
   }
@@ -102,8 +119,6 @@ class List extends Group {
   /**
     @summary Render the widget when data changes.
     @description
-    * By default, reselect the DOM items and stitch `this.data` to them.
-    *
     * This method uses the `.key()` method to map the item data to the DOM.
     * DOM objects that aren't found are created; those that are found are
     * updated. Items that exist and were selected, but not updated, are removed.
@@ -111,11 +126,15 @@ class List extends Group {
     @returns {duil.List} The widget itself for chaining.
     */
   render() {
-    if (this.$dom) {
-      this.views = DOM.findAll(this.$dom, this.selector);
-    }// end if: refresh the list of views if they changed outside our context.
+    const views = _.map(this.data, (model, index) => {
+      const view = this.key(model, index);
+      return DOM.getElement(view ?
+        this.update(view, model, index) :
+        this.create(model, index));
+    });
 
-    super.render();
+    const untouched = _.differenceWith(this.views, views, _.isEqual);
+    this.remove(untouched);
     return this;
   }
 }

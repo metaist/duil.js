@@ -3,6 +3,7 @@ export {default as find} from 'lodash-es/find';
 export {default as forEach} from 'lodash-es/forEach';
 export {default as forOwn} from 'lodash-es/forOwn';
 export {default as get} from 'lodash-es/get';
+export {default as isArray} from 'lodash-es/isArray';
 export {default as isElement} from 'lodash-es/isElement';
 export {default as isEqual} from 'lodash-es/isEqual';
 export {default as isFunction} from 'lodash-es/isFunction';

@@ -283,7 +283,7 @@ module.exports = {
         "yield-star-spacing": "error",
         "yoda": [
             "error",
-            "always"
+            "never", {"onlyEquality": true}
         ]
     }
 };

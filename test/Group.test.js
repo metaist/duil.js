@@ -29,7 +29,23 @@ test('Group', (t) => {
   t.end();
 });
 
-test('Group.key', (t) => {
+test('Group.key [by id]', (t) => {
+  const group = new duil.Group({
+    data: [1, 2, 3],
+    views: ['this-1', 'this-2', 'this-3'],
+  });
+
+  t.ok(group.data.length, 'have data');
+
+  const view = group.key(group.data[1], 1);
+  t.same(view, group.views[1]);
+
+  t.same(null, group.key({}, 100));
+  t.end();
+});
+
+
+test('Group.key [by id]', (t) => {
   const group = new duil.Group({
     data: DUEL_MODEL(),
     views: DUEL_MODEL(),
