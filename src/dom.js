@@ -3,6 +3,7 @@ import * as _ from './lodash';
 /* eslint func-style: ["error", "declaration"] */
 
 /**
+  @private
   @memberof duil.dom
   @summary Find the first element within another element using a CSS query.
   @param {Element|jQuery} element The element within which to search.
@@ -16,6 +17,7 @@ function find(element, query) {
 }
 
 /**
+  @private
   @memberof duil.dom
   @summary Find all the elements within another element using a CSS query.
   @param {Element|jQuery} element The element within which to search.
@@ -29,6 +31,7 @@ function findAll(element, query) {
 }
 
 /**
+  @private
   @memberof duil.dom
   @summary Remove an element from the DOM.
   @param {Element|jQuery} element The element to remove.
@@ -42,6 +45,7 @@ function remove(element) {
 }
 
 /**
+  @private
   @memberof duil.dom
   @summary Clone an element.
   @param {Element|jQuery} element The element to clone.
@@ -54,6 +58,7 @@ function clone(element) {
 }
 
 /**
+  @private
   @memberof duil.dom
   @summary Append an element to a parent.
   @param {Element|jQuery} parent The element to append into.
@@ -67,6 +72,7 @@ function append(parent, element) {
 }
 
 /**
+  @private
   @memberof duil.dom
   @summary Set the text of an element.
   @param {Element|jQuery} element The element to append.
@@ -82,11 +88,50 @@ function setText(element, string) {
   return element;
 }
 
-export {find, findAll, remove, clone, append, setText}
+/**
+  @private
+  @memberof duil.dom
+  @summary Unwrap an element.
+  @param {Element|jQuery} element The element to unwrap.
+  @return {Element} The element itself.
+  */
+function getElement(element) {
+  return _.isElement(element) ? element : element.get(0);
+}
+
+/**
+  @private
+  @memberof duil.dom
+  @summary Get the element at the given index.
+  @param {Element[]|jQuery} array Set of elements.
+  @param {number} index The index of the element to get.
+  @return {Element|jQuery} The element at the index.
+  */
+function getIndex(array, index) {
+  return _.isArray(array) ? array[index] : array.eq(index);
+}
+
+/**
+  @private
+  @memberof duil.dom
+  @summary Insert element at the given index.
+  @param {Element[]|jQuery} array Set of elements.
+  @param {number} index The index at which to insert.
+  @param {Element|jQuery} element The element to insert.
+  @return {Element[]|jQuery} The modified array of elements.
+  */
+function insert(array, index, element) {
+  array.splice(index, 0, getElement(element));
+  return array;
+}
+
+export {find, findAll, remove, clone, append, setText,
+        getElement, getIndex, insert}
 
 /**
   A collection of functions for controlling DOM nodes.
-  @namespace dom
+  @namespace _dom
+  @private
   @memberof duil
   */
 export default {
@@ -95,5 +140,8 @@ export default {
   remove: remove,
   clone: clone,
   append: append,
-  setText: setText
+  setText: setText,
+  getElement: getElement,
+  getIndex: getIndex,
+  insert: insert
 }

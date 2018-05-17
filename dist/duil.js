@@ -1,11 +1,11 @@
-/** duil v0.3.0 | @copyright 2018 Metaist LLC <metaist.com> | @license MIT */
+/** duil v0.3.1 | @copyright 2018 Metaist LLC <metaist.com> | @license MIT */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
   typeof define === 'function' && define.amd ? define(['exports'], factory) :
   (factory((global.duil = {})));
 }(this, (function (exports) { 'use strict';
 
-  var version = "0.3.0";
+  var version = "0.3.1";
 
   /** Detect free variable `global` from Node.js. */
   var freeGlobal = typeof global == 'object' && global && global.Object === Object && global;
@@ -4078,6 +4078,17 @@
       if (doRender) { this.render(); } //
       return this;
     }
+
+    /**
+      @summary Invoke a method from another class in the context of this widget.
+      @param {Widget} parent The class with the method to invoke.
+      @param {string} name The name of the method to invoke.
+      @param {...*} args The arguments to pass to the method.
+      @returns {*} Returns the result of invoking the method.
+      */
+    invoke(parent, name, ...args) {
+      return parent.prototype[name].apply(this, args);
+    }
   }
 
   /**
@@ -4103,22 +4114,7 @@
   */
   class Group extends Widget {
     constructor(props) {
-      Object.assign(Group.prototype, {
-        data: [],
-        views: []
-      });
-      super(props);
-    }
-
-    /**
-      @summary Gets the view at the same index as the model.
-
-      @param {*} model The model whose view we want.
-      @param {number} index The index of the model.
-      @returns {Object|null} Returns the view or `null` if none is found.
-     */
-    static KEY_BY_INDEX(model, index) {
-      return index < this.views.length ? this.views[index] : null;
+      super(Object.assign({data: [], views: []}, props));
     }
 
     /**
@@ -4140,10 +4136,9 @@
       *
       * If this method returns `null`, a new view will be created.
       *
-      * By default, {@link duil.Group.KEY_BY_INDEX} method is used which assumes
-      * that both models and views are in the same order. Alternatively, if they
-      * are in different orders, but have an `id` property in common, you can used
-      * {@link duil.Group.KEY_BY_ID}.
+      * By default, this method assumes that both models and views are in the same
+      * order. Alternatively, if they are in different orders, but have an `id`
+      * property in common, you can used {@link duil.Group.KEY_BY_ID}.
       *
       * In general, you should not have to override this method unless your models
       * are not in a guaranteed order and it is cheaper to map from models to
@@ -4153,8 +4148,9 @@
       @param {number} index The index of the model.
       @returns {Object} Returns the view or `null` if none is found.
       */
-    // eslint-disable-next-line class-methods-use-this
-    key(model, index) { return null; }
+    key(model, index) {
+      return index < this.views.length ? this.views[index] : null;
+    }
 
     /**
       @summary Create a new view for a given model.
@@ -4164,7 +4160,7 @@
       @returns {Object} Returns the newly-created view.
      */
     create(model, index) {
-      var view = this.update({}, model, index);
+      const view = this.update({}, model, index);
       this.views.splice(index, 0, view);
       return view;
     }
@@ -4212,25 +4208,23 @@
       @returns {duil.Group} Returns the group for chaining.
      */
     render() {
-      var views = map(this.data, (model, index) => {
-        var view = this.key(model, index);
+      const views = map(this.data, (model, index) => {
+        const view = this.key(model, index);
         return view ?
           this.update(view, model, index) :
           this.create(model, index);
       });
 
-      var untouched = differenceWith(this.views, views, isEqual);
+      const untouched = differenceWith(this.views, views, isEqual);
       this.remove(untouched);
       return this;
     }
   }
 
-  // By default, use the KEY_BY_INDEX static method.
-  Group.prototype.key = Group.KEY_BY_INDEX;
-
   /* eslint func-style: ["error", "declaration"] */
 
   /**
+    @private
     @memberof duil.dom
     @summary Find the first element within another element using a CSS query.
     @param {Element|jQuery} element The element within which to search.
@@ -4244,6 +4238,7 @@
   }
 
   /**
+    @private
     @memberof duil.dom
     @summary Find all the elements within another element using a CSS query.
     @param {Element|jQuery} element The element within which to search.
@@ -4257,6 +4252,7 @@
   }
 
   /**
+    @private
     @memberof duil.dom
     @summary Remove an element from the DOM.
     @param {Element|jQuery} element The element to remove.
@@ -4270,6 +4266,7 @@
   }
 
   /**
+    @private
     @memberof duil.dom
     @summary Clone an element.
     @param {Element|jQuery} element The element to clone.
@@ -4282,6 +4279,7 @@
   }
 
   /**
+    @private
     @memberof duil.dom
     @summary Append an element to a parent.
     @param {Element|jQuery} parent The element to append into.
@@ -4295,6 +4293,7 @@
   }
 
   /**
+    @private
     @memberof duil.dom
     @summary Set the text of an element.
     @param {Element|jQuery} element The element to append.
@@ -4311,8 +4310,46 @@
   }
 
   /**
+    @private
+    @memberof duil.dom
+    @summary Unwrap an element.
+    @param {Element|jQuery} element The element to unwrap.
+    @return {Element} The element itself.
+    */
+  function getElement(element) {
+    return isElement(element) ? element : element.get(0);
+  }
+
+  /**
+    @private
+    @memberof duil.dom
+    @summary Get the element at the given index.
+    @param {Element[]|jQuery} array Set of elements.
+    @param {number} index The index of the element to get.
+    @return {Element|jQuery} The element at the index.
+    */
+  function getIndex(array, index) {
+    return isArray(array) ? array[index] : array.eq(index);
+  }
+
+  /**
+    @private
+    @memberof duil.dom
+    @summary Insert element at the given index.
+    @param {Element[]|jQuery} array Set of elements.
+    @param {number} index The index at which to insert.
+    @param {Element|jQuery} element The element to insert.
+    @return {Element[]|jQuery} The modified array of elements.
+    */
+  function insert(array, index, element) {
+    array.splice(index, 0, getElement(element));
+    return array;
+  }
+
+  /**
     A collection of functions for controlling DOM nodes.
-    @namespace dom
+    @namespace _dom
+    @private
     @memberof duil
     */
   var dom = {
@@ -4321,7 +4358,10 @@
     remove: remove,
     clone: clone,
     append: append,
-    setText: setText
+    setText: setText,
+    getElement: getElement,
+    getIndex: getIndex,
+    insert: insert
   }
 
   /**
@@ -4354,12 +4394,11 @@
     */
   class List extends Group {
     constructor(props) {
-      Object.assign(List.prototype, {
+      super(Object.assign({
         $dom: null,
         $tmpl: null,
         selector: 'li'
-      });
-      super(props);
+      }, props));
     }
 
     /**
@@ -4368,13 +4407,31 @@
       * By default, if the `this.$tmpl` is not defined, it is extracted from
       * the container by querying for the first element that matches `selector`.
 
+      @override
       @returns {duil.List} The widget itself for chaining.
     */
     init() {
-      if (this.$dom && !this.$tmpl) {
-        this.$tmpl = remove(find$1(this.$dom, this.selector));
-      }// end if: extracted template from container
+      if (this.$dom && this.selector) {
+        if (!this.$tmpl) {
+          this.$tmpl = remove(find$1(this.$dom, this.selector));
+        }// end if: extracted template from container
+        this.views = findAll(this.$dom, this.selector);
+      }// end if: initialized views
       return this;
+    }
+
+    /**
+      @summary Get the view that corresponds to the given model.
+      @description
+      * For `duil.List`, the views may either be a jQuery object or a plain array.
+
+      @override
+      @param {*} model The model whose view we want.
+      @param {number} index The index of the model.
+      @returns {Element|jQuery} Returns the view or `null` if none is found.
+      */
+    key(model, index) {
+      return index < this.views.length ? getIndex(this.views, index) : null;
     }
 
     /**
@@ -4383,14 +4440,15 @@
       * By default, clones the template, updates it using [.udpate()](#update),
       * and then appends it to the container.
 
+      @override
       @param {*} model The data for this element.
       @param {Number} index The model index.
       @returns {Element|jQuery} Returns the new element.
       */
     create(model, index) {
-      var view = this.update(clone(this.$tmpl), model, index);
+      const view = this.update(clone(this.$tmpl), model, index);
       append(this.$dom, view);
-      this.views.splice(index, 0, view);
+      insert(this.views, index, view);
       return view;
     }
 
@@ -4399,6 +4457,7 @@
       @description
       * By default, sets the text of the element to the model.
 
+      @override
       @param {Element|jQuery} view The element to update.
       @param {*} model The data for this element.
       @param {Number} index The model index.
@@ -4413,10 +4472,12 @@
     /**
       @summary Remove a DOM object.
 
-      @param {jQuery} views The DOM objects to remove.
+      @override
+      @param {Element[]|jQuery} views The DOM objects to remove.
       @returns {duil.List} The widget itself for chaining.
       */
     remove(views) {
+      this.invoke(Group, 'remove', views);
       forEach(views, remove);
       return this;
     }
@@ -4424,20 +4485,23 @@
     /**
       @summary Render the widget when data changes.
       @description
-      * By default, reselect the DOM items and stitch `this.data` to them.
-      *
       * This method uses the `.key()` method to map the item data to the DOM.
       * DOM objects that aren't found are created; those that are found are
       * updated. Items that exist and were selected, but not updated, are removed.
 
+      @override
       @returns {duil.List} The widget itself for chaining.
       */
     render() {
-      if (this.$dom) {
-        this.views = findAll(this.$dom, this.selector);
-      }// end if: refresh the list of views if they changed outside our context.
+      const views = map(this.data, (model, index) => {
+        const view = this.key(model, index);
+        return getElement(view ?
+          this.update(view, model, index) :
+          this.create(model, index));
+      });
 
-      super.render();
+      const untouched = differenceWith(this.views, views, isEqual);
+      this.remove(untouched);
       return this;
     }
   }
@@ -4449,6 +4513,25 @@
     @description
     * The [jQuery plugin](http://learn.jquery.com/plugins/) namespace.
     */
+  const jq = Function('return this')().$; // eslint-disable-line no-new-func
+
+
+  /**
+    @private
+    */
+  const split = (val, key) => {
+    const [fn, name] = key.split(/:(.*)/, 2); // split on first colon
+    const $fn = name ?
+      // eslint-disable-next-line no-invalid-this
+      function (...args) { return jq.fn[fn].bind(this)(name, ...args); } :
+      jq.fn[fn];
+
+    return {
+      fn: $fn, // getter / setter
+      isClass: fn.endsWith('Class'),
+      val: isFunction(val) ? val : () => val // value function
+    };
+  };
 
   /**
     @summary Set attributes of the selected DOM objects if they haven't changed.
@@ -4478,40 +4561,27 @@
     *   'prop:disabled': true
     * });
     */
-  const jQuery_set = function (attr, value) {
-    const split = (val, key) => {
-      const [fn, name] = key.split(/:(.*)/, 2); // split on first colon
-      return {
-        // the property getter / setter
-        fn: fn, name: name,
-        isClass: fn.endsWith('Class'),
-        val: isFunction(val) ? val : () => val // the value to set
-      };
-    };
+  const $set = function (attr, value) {
     const rules = isPlainObject(attr) ?
       map(attr, split) : [split(value, attr)];
 
     // eslint-disable-next-line no-invalid-this
     return this.each((index, dom) => {
-      var $dom = $(dom); // eslint-disable-line no-undef
-      forEach(rules, (rule) => {
-        const fn = rule.name ?
-          (...args) => $dom[rule.fn].bind($dom)(rule.name, ...args) :
-          $dom[rule.fn].bind($dom);
+      const $dom = jq(dom);
+      const className = dom.getAttribute('class');
 
+      forEach(rules, (rule) => {
         // get the previous and next values for the property
-        const prev = rule.isClass ? dom.getAttribute('class') : fn();
+        const fn = rule.fn.bind($dom);
+        const prev = rule.isClass ? className : fn();
         const next = rule.val.bind(dom)(index, prev);
         if (rule.isClass || prev !== next) { fn(next); } // change if different
       });// end for: all rules applied
     });// end for: all DOM nodes applied
   };
 
-  // eslint-disable-next-line no-new-func
-  var top = Function('return this')() || global;
-  if (top.$ && top.$.extend && top.$.fn) {
-    top.$.extend(top.$.fn, {set: jQuery_set});
-  }// end if: exposed only if jQuery-like API exists
+  // only install if jQuery-like API detected
+  if (jq && jq.extend && jq.fn) { jq.fn.extend({set: $set}); }
 
   /**
     Data + UI + Loop = duil
@@ -4522,8 +4592,10 @@
   exports.Widget = Widget;
   exports.Group = Group;
   exports.List = List;
-  exports.dom = dom;
+  exports._dom = dom;
 
   Object.defineProperty(exports, '__esModule', { value: true });
+
+  exports._build = "2018-05-17T01:39:02.733Z";
 
 })));

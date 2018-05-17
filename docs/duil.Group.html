@@ -22,7 +22,7 @@
 <label for="nav-trigger" class="overlay"></label>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="duil.Widget.html">Widget</a><ul class='methods'><li data-type='method'><a href="duil.Widget.html#init">init</a></li><li data-type='method'><a href="duil.Widget.html#render">render</a></li><li data-type='method'><a href="duil.Widget.html#set">set</a></li></ul></li><li><a href="duil.Group.html">Group</a><ul class='methods'><li data-type='method'><a href="duil.Group.html#.KEY_BY_INDEX">KEY_BY_INDEX</a></li><li data-type='method'><a href="duil.Group.html#.KEY_BY_ID">KEY_BY_ID</a></li><li data-type='method'><a href="duil.Group.html#key">key</a></li><li data-type='method'><a href="duil.Group.html#create">create</a></li><li data-type='method'><a href="duil.Group.html#update">update</a></li><li data-type='method'><a href="duil.Group.html#remove">remove</a></li><li data-type='method'><a href="duil.Group.html#render">render</a></li><li data-type='method'><a href="duil.Group.html#init">init</a></li><li data-type='method'><a href="duil.Group.html#set">set</a></li></ul></li><li><a href="duil.List.html">List</a><ul class='methods'><li data-type='method'><a href="duil.List.html#init">init</a></li><li data-type='method'><a href="duil.List.html#create">create</a></li><li data-type='method'><a href="duil.List.html#update">update</a></li><li data-type='method'><a href="duil.List.html#remove">remove</a></li><li data-type='method'><a href="duil.List.html#render">render</a></li><li data-type='method'><a href="duil.List.html#key">key</a></li><li data-type='method'><a href="duil.List.html#set">set</a></li></ul></li></ul><h3>Externals</h3><ul><li><a href="external-_jQuery.fn_.html">jQuery.fn</a><ul class='methods'><li data-type='method'><a href="external-_jQuery.fn_.html#.set">set</a></li></ul></li></ul><h3>Namespaces</h3><ul><li><a href="duil.html">duil</a><ul class='members'><li data-type='member'><a href="duil.html#.version">version</a></li></ul></li><li><a href="duil.dom.html">dom</a><ul class='methods'><li data-type='method'><a href="duil.dom.html#.find">find</a></li><li data-type='method'><a href="duil.dom.html#.findAll">findAll</a></li><li data-type='method'><a href="duil.dom.html#.remove">remove</a></li><li data-type='method'><a href="duil.dom.html#.clone">clone</a></li><li data-type='method'><a href="duil.dom.html#.append">append</a></li><li data-type='method'><a href="duil.dom.html#.setText">setText</a></li></ul></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="duil.Widget.html">Widget</a><ul class='methods'><li data-type='method'><a href="duil.Widget.html#init">init</a></li><li data-type='method'><a href="duil.Widget.html#render">render</a></li><li data-type='method'><a href="duil.Widget.html#set">set</a></li><li data-type='method'><a href="duil.Widget.html#invoke">invoke</a></li></ul></li><li><a href="duil.Group.html">Group</a><ul class='methods'><li data-type='method'><a href="duil.Group.html#.KEY_BY_ID">KEY_BY_ID</a></li><li data-type='method'><a href="duil.Group.html#key">key</a></li><li data-type='method'><a href="duil.Group.html#create">create</a></li><li data-type='method'><a href="duil.Group.html#update">update</a></li><li data-type='method'><a href="duil.Group.html#remove">remove</a></li><li data-type='method'><a href="duil.Group.html#render">render</a></li><li data-type='method'><a href="duil.Group.html#init">init</a></li><li data-type='method'><a href="duil.Group.html#set">set</a></li><li data-type='method'><a href="duil.Group.html#invoke">invoke</a></li></ul></li><li><a href="duil.List.html">List</a><ul class='methods'><li data-type='method'><a href="duil.List.html#key">key</a></li><li data-type='method'><a href="duil.List.html#create">create</a></li><li data-type='method'><a href="duil.List.html#update">update</a></li><li data-type='method'><a href="duil.List.html#remove">remove</a></li><li data-type='method'><a href="duil.List.html#render">render</a></li><li data-type='method'><a href="duil.List.html#init">init</a></li><li data-type='method'><a href="duil.List.html#set">set</a></li><li data-type='method'><a href="duil.List.html#invoke">invoke</a></li></ul></li></ul><h3>Externals</h3><ul><li><a href="external-_jQuery.fn_.html">jQuery.fn</a><ul class='methods'><li data-type='method'><a href="external-_jQuery.fn_.html#.set">set</a></li></ul></li></ul><h3>Namespaces</h3><ul><li><a href="duil.html">duil</a><ul class='members'><li data-type='member'><a href="duil.html#.version">version</a></li></ul></li></ul>
 </nav>
 
 <div id="main">
@@ -303,185 +303,6 @@ dot are stored in <code>data</code> while the objects actually manipulate are in
 
     
 
-    <h4 class="name" id=".KEY_BY_INDEX"><span class="type-signature">(static) </span>KEY_BY_INDEX<span class="signature">(model, index)</span><span class="type-signature"> &rarr; {Object|null}</span></h4>
-
-    
-    <p class="summary"><p>Gets the view at the same index as the model.</p></p>
-    
-
-
-
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Group.js.html">Group.js</a>, <a href="Group.js.html#line41">line 41</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>model</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">*</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>The model whose view we want.</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>index</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>The index of the model.</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    <p>Returns the view or <code>null</code> if none is found.</p>
-</div>
-
-
-
-<dl class="param-type">
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Object</span>
-|
-
-<span class="param-type">null</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-        
-            
-
-    
-
     <h4 class="name" id=".KEY_BY_ID"><span class="type-signature">(static) </span>KEY_BY_ID<span class="signature">(model, index)</span><span class="type-signature"> &rarr; {Object|null}</span></h4>
 
     
@@ -494,7 +315,7 @@ dot are stored in <code>data</code> while the objects actually manipulate are in
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Group.js.html">Group.js</a>, <a href="Group.js.html#line52">line 52</a>
+        <a href="Group.js.html">Group.js</a>, <a href="Group.js.html#line37">line 37</a>
     </li></ul></dd>
     
 
@@ -677,7 +498,7 @@ dot are stored in <code>data</code> while the objects actually manipulate are in
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Group.js.html">Group.js</a>, <a href="Group.js.html#line78">line 78</a>
+        <a href="Group.js.html">Group.js</a>, <a href="Group.js.html#line61">line 61</a>
     </li></ul></dd>
     
 
@@ -720,10 +541,9 @@ dot are stored in <code>data</code> while the objects actually manipulate are in
     <p>This method is called during <code>Group.duil.render</code> to determine which
 view should be updated.</p>
 <p>If this method returns <code>null</code>, a new view will be created.</p>
-<p>By default, <a href="duil.Group.html#.KEY_BY_INDEX"><code>duil.Group.KEY_BY_INDEX</code></a> method is used which assumes
-that both models and views are in the same order. Alternatively, if they
-are in different orders, but have an <code>id</code> property in common, you can used
-<a href="duil.Group.html#.KEY_BY_ID"><code>duil.Group.KEY_BY_ID</code></a>.</p>
+<p>By default, this method assumes that both models and views are in the same
+order. Alternatively, if they are in different orders, but have an <code>id</code>
+property in common, you can used <a href="duil.Group.html#.KEY_BY_ID"><code>duil.Group.KEY_BY_ID</code></a>.</p>
 <p>In general, you should not have to override this method unless your models
 are not in a guaranteed order and it is cheaper to map from models to
 views in some other way.</p>
@@ -866,7 +686,7 @@ views in some other way.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Group.js.html">Group.js</a>, <a href="Group.js.html#line87">line 87</a>
+        <a href="Group.js.html">Group.js</a>, <a href="Group.js.html#line72">line 72</a>
     </li></ul></dd>
     
 
@@ -1042,7 +862,7 @@ views in some other way.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Group.js.html">Group.js</a>, <a href="Group.js.html#line102">line 102</a>
+        <a href="Group.js.html">Group.js</a>, <a href="Group.js.html#line87">line 87</a>
     </li></ul></dd>
     
 
@@ -1241,7 +1061,7 @@ views in some other way.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Group.js.html">Group.js</a>, <a href="Group.js.html#line119">line 119</a>
+        <a href="Group.js.html">Group.js</a>, <a href="Group.js.html#line104">line 104</a>
     </li></ul></dd>
     
 
@@ -1404,7 +1224,7 @@ that disposes of the view.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Group.js.html">Group.js</a>, <a href="Group.js.html#line135">line 135</a>
+        <a href="Group.js.html">Group.js</a>, <a href="Group.js.html#line120">line 120</a>
     </li></ul></dd>
     
 
@@ -1850,6 +1670,238 @@ console.log(MyWidget.stats.count);
     <dd>
         
 <span class="param-type"><a href="duil.Widget.html">duil.Widget</a></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="invoke"><span class="type-signature"></span>invoke<span class="signature">(parent, name, &hellip;args)</span><span class="type-signature"> &rarr; {*}</span></h4>
+
+    
+    <p class="summary"><p>Invoke a method from another class in the context of this widget.</p></p>
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Widget.js.html">Widget.js</a>, <a href="Widget.js.html#line162">line 162</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="duil.Widget.html#invoke">duil.Widget#invoke</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>parent</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Widget</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>The class with the method to invoke.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>The name of the method to invoke.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>args</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                    &lt;repeatable><br>
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>The arguments to pass to the method.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>Returns the result of invoking the method.</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">*</span>
 
 
     </dd>

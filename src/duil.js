@@ -14,6 +14,6 @@ export {version} from '../package.json';
 export {default as Widget} from './Widget';
 export {default as Group} from './Group';
 export {default as List} from './List';
-export {default as dom} from './dom';
+export {default as _dom} from './dom';
 
 import './jquery.duil';

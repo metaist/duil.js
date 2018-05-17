@@ -32,12 +32,11 @@ import Group from './Group';
   */
 class List extends Group {
   constructor(props) {
-    Object.assign(List.prototype, {
+    super(Object.assign({
       $dom: null,
       $tmpl: null,
       selector: 'li'
-    });
-    super(props);
+    }, props));
   }
 
   /**
@@ -46,13 +45,31 @@ class List extends Group {
     * By default, if the `this.$tmpl` is not defined, it is extracted from
     * the container by querying for the first element that matches `selector`.
 
+    @override
     @returns {duil.List} The widget itself for chaining.
   */
   init() {
-    if (this.$dom && !this.$tmpl) {
-      this.$tmpl = DOM.remove(DOM.find(this.$dom, this.selector));
-    }// end if: extracted template from container
+    if (this.$dom && this.selector) {
+      if (!this.$tmpl) {
+        this.$tmpl = DOM.remove(DOM.find(this.$dom, this.selector));
+      }// end if: extracted template from container
+      this.views = DOM.findAll(this.$dom, this.selector);
+    }// end if: initialized views
     return this;
+  }
+
+  /**
+    @summary Get the view that corresponds to the given model.
+    @description
+    * For `duil.List`, the views may either be a jQuery object or a plain array.
+
+    @override
+    @param {*} model The model whose view we want.
+    @param {number} index The index of the model.
+    @returns {Element|jQuery} Returns the view or `null` if none is found.
+    */
+  key(model, index) {
+    return index < this.views.length ? DOM.getIndex(this.views, index) : null;
   }
 
   /**
@@ -61,14 +78,15 @@ class List extends Group {
     * By default, clones the template, updates it using [.udpate()](#update),
     * and then appends it to the container.
 
+    @override
     @param {*} model The data for this element.
     @param {Number} index The model index.
     @returns {Element|jQuery} Returns the new element.
     */
   create(model, index) {
-    var view = this.update(DOM.clone(this.$tmpl), model, index);
+    const view = this.update(DOM.clone(this.$tmpl), model, index);
     DOM.append(this.$dom, view);
-    this.views.splice(index, 0, view);
+    DOM.insert(this.views, index, view);
     return view;
   }
 
@@ -77,6 +95,7 @@ class List extends Group {
     @description
     * By default, sets the text of the element to the model.
 
+    @override
     @param {Element|jQuery} view The element to update.
     @param {*} model The data for this element.
     @param {Number} index The model index.
@@ -91,10 +110,12 @@ class List extends Group {
   /**
     @summary Remove a DOM object.
 
-    @param {jQuery} views The DOM objects to remove.
+    @override
+    @param {Element[]|jQuery} views The DOM objects to remove.
     @returns {duil.List} The widget itself for chaining.
     */
   remove(views) {
+    this.invoke(Group, 'remove', views);
     _.forEach(views, DOM.remove);
     return this;
   }
@@ -102,20 +123,23 @@ class List extends Group {
   /**
     @summary Render the widget when data changes.
     @description
-    * By default, reselect the DOM items and stitch `this.data` to them.
-    *
     * This method uses the `.key()` method to map the item data to the DOM.
     * DOM objects that aren't found are created; those that are found are
     * updated. Items that exist and were selected, but not updated, are removed.
 
+    @override
     @returns {duil.List} The widget itself for chaining.
     */
   render() {
-    if (this.$dom) {
-      this.views = DOM.findAll(this.$dom, this.selector);
-    }// end if: refresh the list of views if they changed outside our context.
+    const views = _.map(this.data, (model, index) => {
+      const view = this.key(model, index);
+      return DOM.getElement(view ?
+        this.update(view, model, index) :
+        this.create(model, index));
+    });
 
-    super.render();
+    const untouched = _.differenceWith(this.views, views, _.isEqual);
+    this.remove(untouched);
     return this;
   }
 }

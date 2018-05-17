@@ -1,5 +1,5 @@
 const test = require('tape');
-const duil = require('../dist/duil');
+const duil = require('../dist/duil.min');
 
 test('Widget is not empty', (t) => {
   var widget = new duil.Widget();
@@ -11,13 +11,17 @@ test('Widget is not empty', (t) => {
 });
 
 test('Widget constructor', (t) => {
+  const value = 5;
   var thing = new duil.Widget({
-    value: 5,
+    value: value,
     method: function () { return this.value; }
   });
 
-  t.is(thing.value, 5, 'property is added');
-  t.is(thing.method(), 5, 'functions is bound to the widget');
+  t.is(thing.value, value, 'property is added');
+  t.is(thing.method(), value, 'functions is bound to the widget');
+
+  thing.set({method: function () { return -this.value; }});
+  t.is(thing.method(), -value, 'functions can override properly');
 
   t.end();
 });
@@ -71,8 +75,7 @@ test('Widget superclass', (t) => {
 
     // @override
     say(insult) {
-     return WidgetA.prototype.say.call(this, `, ${insult}${super.punct}`);
-     // return super.super.say(`, ${insult}${super.punct}`);
+      return this.invoke(WidgetA, 'say', `, ${insult}${super.punct}`);
     }
   }
 

@@ -1,7 +1,11 @@
+try { delete require.cache[require.resolve('../dist/duil.min.js')]; }
+catch (e) { /* empty */ }
+
 const end_jsdom = require('jsdom-global')();
 const $ = require('jquery');
+global.$ = $; // for jQuery detection
 const test = require('tape');
-const duil = require('../dist/duil');
+const duil = require('../dist/duil.min');
 
 test('List', (t) => {
   var list = new duil.List();
@@ -59,12 +63,12 @@ test('more complex list', (t) => {
 
     // @override
     update: function (view, model, index) {
-      $(view)
+      view
         .find('.year').text(model.year).end()
-        .find('a')
-          .text(model.name)
-          .attr('href', `mailto:${model.email}`)
-        .end();
+        .find('a').set({
+          'text': model.name,
+          'attr:href': `mailto:${model.email}`
+        }).end();
       return view;
     }
   });

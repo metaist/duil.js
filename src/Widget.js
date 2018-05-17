@@ -151,6 +151,17 @@ class Widget {
     if (doRender) { this.render(); } //
     return this;
   }
+
+  /**
+    @summary Invoke a method from another class in the context of this widget.
+    @param {Widget} parent The class with the method to invoke.
+    @param {string} name The name of the method to invoke.
+    @param {...*} args The arguments to pass to the method.
+    @returns {*} Returns the result of invoking the method.
+    */
+  invoke(parent, name, ...args) {
+    return parent.prototype[name].apply(this, args);
+  }
 }
 
 export default Widget;

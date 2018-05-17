@@ -24,22 +24,7 @@ import Widget from './Widget';
 */
 class Group extends Widget {
   constructor(props) {
-    Object.assign(Group.prototype, {
-      data: [],
-      views: []
-    });
-    super(props);
-  }
-
-  /**
-    @summary Gets the view at the same index as the model.
-
-    @param {*} model The model whose view we want.
-    @param {number} index The index of the model.
-    @returns {Object|null} Returns the view or `null` if none is found.
-   */
-  static KEY_BY_INDEX(model, index) {
-    return index < this.views.length ? this.views[index] : null;
+    super(Object.assign({data: [], views: []}, props));
   }
 
   /**
@@ -61,10 +46,9 @@ class Group extends Widget {
     *
     * If this method returns `null`, a new view will be created.
     *
-    * By default, {@link duil.Group.KEY_BY_INDEX} method is used which assumes
-    * that both models and views are in the same order. Alternatively, if they
-    * are in different orders, but have an `id` property in common, you can used
-    * {@link duil.Group.KEY_BY_ID}.
+    * By default, this method assumes that both models and views are in the same
+    * order. Alternatively, if they are in different orders, but have an `id`
+    * property in common, you can used {@link duil.Group.KEY_BY_ID}.
     *
     * In general, you should not have to override this method unless your models
     * are not in a guaranteed order and it is cheaper to map from models to
@@ -74,8 +58,9 @@ class Group extends Widget {
     @param {number} index The index of the model.
     @returns {Object} Returns the view or `null` if none is found.
     */
-  // eslint-disable-next-line class-methods-use-this
-  key(model, index) { return null; }
+  key(model, index) {
+    return index < this.views.length ? this.views[index] : null;
+  }
 
   /**
     @summary Create a new view for a given model.
@@ -85,7 +70,7 @@ class Group extends Widget {
     @returns {Object} Returns the newly-created view.
    */
   create(model, index) {
-    var view = this.update({}, model, index);
+    const view = this.update({}, model, index);
     this.views.splice(index, 0, view);
     return view;
   }
@@ -133,20 +118,17 @@ class Group extends Widget {
     @returns {duil.Group} Returns the group for chaining.
    */
   render() {
-    var views = _.map(this.data, (model, index) => {
-      var view = this.key(model, index);
+    const views = _.map(this.data, (model, index) => {
+      const view = this.key(model, index);
       return view ?
         this.update(view, model, index) :
         this.create(model, index);
     });
 
-    var untouched = _.differenceWith(this.views, views, _.isEqual);
+    const untouched = _.differenceWith(this.views, views, _.isEqual);
     this.remove(untouched);
     return this;
   }
 }
-
-// By default, use the KEY_BY_INDEX static method.
-Group.prototype.key = Group.KEY_BY_INDEX;
 
 export default Group;
