@@ -1,6 +1,6 @@
 {
   "name": "duil",
-  "version": "0.3.1-dev",
+  "version": "0.3.1",
   "description": "Tiny data-driven ui rendering framework.",
   "keywords": [
     "data-ui-loop",

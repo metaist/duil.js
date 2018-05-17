@@ -1,7 +1,7 @@
 # duil: data + ui = loop
 [Latest Release] - [Documentation] - [Issues]
 
-**duil** (sounds like duel) is a simple JavaScript library for creating single page apps that react to changes in their underlying data. duil leverages the technologies you already know, like JavaScript and HTML, instead of making you learn a brand new syntax. With duil, you can create dynamic web pages with less code and cleaner abstractions.
+**duil** (`/ˈduəl/`, like duel) is a simple JavaScript library for creating single page apps that react to changes in their underlying data. duil leverages the technologies you already know, like JavaScript and HTML, instead of making you learn a brand new syntax. With duil, you can create dynamic web pages with less code and cleaner abstractions.
 
 [![version][badge-version]](https://github.com/metaist/duil.js/blob/master/CHANGELOG.md)
 [![license][badge-license]](https://github.com/metaist/duil.js/blob/master/LICENSE.md)
@@ -13,7 +13,7 @@
 [Documentation]: https://metaist.github.io/duil.js/
 [Issues]: https://github.com/metaist/duil.js/issues
 
-[badge-version]: https://img.shields.io/badge/version-0.3.0-blue.svg
+[badge-version]: https://img.shields.io/badge/version-0.3.1-blue.svg
 [badge-license]: https://img.shields.io/badge/license-MIT-blue.svg
 [badge-travis]: https://travis-ci.org/metaist/duil.js.svg?branch=master
 [badge-release]: https://img.shields.io/github/downloads/metaist/duil.js/total.svg
@@ -25,7 +25,7 @@ You already know HTML and JavaScript, why should you learn a new syntax just to 
 ## Getting Started
 Download the [latest release][Latest Release] or include the following code on your page:
 ```html
-<script src="https://cdn.jsdelivr.net/gh/metaist/duil.js@0.3.0/dist/duil.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/metaist/duil.js@0.3.1/dist/duil.min.js"></script>
 ```
 
 ## Example
