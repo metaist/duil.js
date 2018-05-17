@@ -33,49 +33,21 @@
       </div>
 
       <div class="images">
-        <div class="blank"></div>
         <img src="" />
       </div>
     </div>
   </div>
 
+<script src="https://cdn.jsdelivr.net/npm/lodash@4.17.10/lodash.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/mazondo/gravatarjs/gravatar.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/metaist/duil.js/dist/duil.min.js"></script>
+<script src="../dist/duil.min.js"></script>
 <script>
   /* global $:true, duil:true, gravatar:true */
-
-  /**
-    @description
-    Construct a duil.List for the images inside of each row. We do this first
-    because duil.List will remove the HTML template when it is defined, so we
-    want to remove the inner-most template first.
-  */
-  var imageList = new duil.List({
-
-    /**
-      @description
-      When initializing the list, you should start by specifying the container
-      into which the template will be rendered.
-
-      Note that we will be chaging this property together with the widget data
-      in order to get the widget to render new data in a different scope.
-
-      @override
-      @property {jQuery} $dom The container for the images.
-      */
-    $dom: $('.images'),
-
-    /**
-      @description
-      If $dom is set, but $tmpl isn't, then the selector is used for grabbing
-      the template out of the DOM.
-
-      @override
-      @property {string} selector The query selector for getting all of the
-        images within the container.
-      */
-    selector: 'img',
+  class ImageList extends duil.List {
+    constructor(props) {
+      super(Object.assign({selector: 'img'}, props));
+    }
 
     /**
       @description
@@ -88,7 +60,8 @@
       @param {number} index The model index.
       @returns {jQuery} The rendered DOM.
       */
-    update: function ($img, image, index) {
+    // eslint-disable-next-line class-methods-use-this
+    update($img, image, index) {
       // Update the image src and title attributes. We are assuming these are
       // always present.
       $img.set({
@@ -99,7 +72,7 @@
       // Return the rendered DOM.
       return $img;
     }
-  });
+  }
 
   /**
     @description
@@ -126,6 +99,28 @@
       */
     selector: '.row',
 
+    // We keep track of the ImageList objects we create here.
+    images: {},
+
+    /**
+      @description
+      This is where we create a user. We create the HTML using the normal
+      `duil.List.create` method and then we create a corresponding ImageList.
+
+      @override
+      @param {*} user The data for this element.
+      @param {Number} index The model index.
+      @returns {jQuery} Returns the new element.
+    */
+    create: function (user, index) {
+      const view = this.invoke(duil.List, 'create', user, index);
+      this.images[user.id] = new ImageList({
+        $dom: view.find('.images'),
+        data: user.images
+      });
+      return view;
+    },
+
     /**
       @description
       Here we define the rules for updating a single row. First, we update the
@@ -145,6 +140,7 @@
     update: function ($row, user, index) {
       // We walk through our template and set properties as appropriate.
       $row
+        .data('id', user.id)
         .find('.gravatar') // Find the outside div for the gravatar icon.
           .set({ // Add a border if there's no email and we set the tooltip.
             'toggleClass:no-email': !user.email,
@@ -158,47 +154,74 @@
           })
         .end();
 
-      // Now render the images for this user. Set the context to the images div
-      // within the row and set the data to the user images.
-      imageList.set({
-        $dom: $row.find('.images'),
-        data: user.images
-      });
+      // Now render the images for this user. Because the `.create()` method
+      // also calls `.update()`, we need to check if the ImageList has been
+      // created yet.
+      if (this.images[user.id]) {
+        this.images[user.id].set({data: user.images});
+      }
 
       // Return the rendered row.
       return $row;
+    },
+
+
+    /**
+      @description
+      Whenever we need to remove a user row, we need to also clean up the
+      corresponding `ImageList`.
+
+      @override
+      @param {jQuery} views The DOM objects to remove.
+      @returns {duil.List} The widget itself for chaining.
+      */
+    remove: function(views) {
+      views.forEach((view) => { this.images[$(view).data('id')] = null; });
+      return this.invoke(duil.List, 'remove', views);
     }
   });
 
   // We define some users.
   const users = [{
     // A user with no email address and no images.
+    id: 1,
     email: '',
     images: []
   }, {
     // A user with an email address, but no images.
+    id: 2,
     email: 'example@example.com',
     images: []
   }, {
     // A user with an image, but no email address.
+    id: 3,
     email: '',
     images: [{
       path: 'http://via.placeholder.com/50x50',
-      timestamp: '2018-05-15T00:00:00.000Z'
-    }]
-  }, {
-    // A user with an email address and images.
-    email: 'metaist+duil@metaist.com',
-    images: [{
-      path: 'http://via.placeholder.com/50x50',
-      timestamp: '2018-05-15T00:00:00.000Z'
-    }, {
-      path: 'http://via.placeholder.com/100x50',
-      timestamp: '2018-05-15T00:00:00.000Z'
+      timestamp: '2018-05-13T00:00:00.000Z'
     }]
   }];
 
   // Now we set the userList data to the users we created.
   userList.set({data: users});
+
+  // Add some more data to the model.
+  userList.set({data: userList.data.concat([{
+    // A user with an email address and images.
+    id: 4,
+    email: 'metaist+duil@metaist.com',
+    images: [{
+      path: 'http://via.placeholder.com/50x50',
+      timestamp: '2018-05-14T00:00:00.000Z'
+    }, {
+      path: 'http://via.placeholder.com/100x50',
+      timestamp: '2018-05-15T00:00:00.000Z'
+    }]
+  }])});
+
+  // Update a specific item.
+  userList.set({
+    'data[2].email': 'tom@mojombo.com' // Creator of Gravatars.
+  });
 </script>
 </body></html>

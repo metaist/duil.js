@@ -45,6 +45,7 @@ class List extends Group {
     * By default, if the `this.$tmpl` is not defined, it is extracted from
     * the container by querying for the first element that matches `selector`.
 
+    @override
     @returns {duil.List} The widget itself for chaining.
   */
   init() {
@@ -77,6 +78,7 @@ class List extends Group {
     * By default, clones the template, updates it using [.udpate()](#update),
     * and then appends it to the container.
 
+    @override
     @param {*} model The data for this element.
     @param {Number} index The model index.
     @returns {Element|jQuery} Returns the new element.
@@ -93,6 +95,7 @@ class List extends Group {
     @description
     * By default, sets the text of the element to the model.
 
+    @override
     @param {Element|jQuery} view The element to update.
     @param {*} model The data for this element.
     @param {Number} index The model index.
@@ -107,6 +110,7 @@ class List extends Group {
   /**
     @summary Remove a DOM object.
 
+    @override
     @param {Element[]|jQuery} views The DOM objects to remove.
     @returns {duil.List} The widget itself for chaining.
     */
@@ -123,6 +127,7 @@ class List extends Group {
     * DOM objects that aren't found are created; those that are found are
     * updated. Items that exist and were selected, but not updated, are removed.
 
+    @override
     @returns {duil.List} The widget itself for chaining.
     */
   render() {
