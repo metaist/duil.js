@@ -32,7 +32,7 @@ Follow the instructions in `CHANGELOG.md` and document all the significant chang
 
 ### Commit, merge, and tag all the changes
 ```bash
-git commit -am "bump: version [skip ci]"
+git commit -am "bump: version"
 git checkout master
 git merge --no-ff release-x.y.z
 git tag x.y.z
