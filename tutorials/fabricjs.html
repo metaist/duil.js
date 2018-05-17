@@ -33,26 +33,32 @@
 
     /**
       @description
-      The key function defines how models are mapped to views. By default, the
-      models and views are simply in the same order. For this example, we are
-      going to use the 'id' attribute.
-
-      duil.Group.KEY_BY_ID is a convenience method for doing just that.
-      */
-    key: duil.Group.KEY_BY_ID,
-
-    /**
-      @description
       This is the function that gets called when the widget is initialized. It
       is customary to register your event handlers here. If you are not
       defining the
 
+      @override
       @returns {duil.Group} Returns the widget itself.
       */
     init: function () {
       this.canvas.on('object:modified', this.modified);
       return this;
     },
+
+    /**
+      @description
+      The key function defines how models are mapped to views. By default, the
+      models and views are simply in the same order. For this example, we are
+      going to use the 'id' attribute.
+
+      duil.Group.KEY_BY_ID is a convenience method for doing just that.
+
+      @override
+      @param {*} model The model whose view we want.
+      @param {number} index The index of the model.
+      @returns {Object} Returns the view or `null` if none is found.
+      */
+    key: duil.Group.KEY_BY_ID,
 
     /**
       @description
@@ -73,7 +79,7 @@
       */
     modified: function (e) {
       const view = e.target;
-      if (!view) { return; }
+      if (!view) { return this; }
 
       const index = this.data.findIndex(m => m.id === view.id);
       const model = this.data[index];
