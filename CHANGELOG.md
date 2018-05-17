@@ -12,8 +12,10 @@ The format is based on [Keep a Changelog] and this project adheres to [Semantic 
 - _None_
 
 ---
+[#7]: https://github.com/metaist/duil.js/issues/7
 [#11]: https://github.com/metaist/duil.js/issues/11
 [#13]: https://github.com/metaist/duil.js/issues/13
+[#14]: https://github.com/metaist/duil.js/issues/14
 [#12]: https://github.com/metaist/duil.js/issues/12
 [#18]: https://github.com/metaist/duil.js/issues/18
 [#19]: https://github.com/metaist/duil.js/issues/19
