@@ -7,7 +7,7 @@
 [![license][badge-license]](https://github.com/metaist/duil.js/blob/master/LICENSE.md)
 [![build][badge-travis]](https://travis-ci.org/metaist/duil.js)
 [![releases][badge-release]][Latest Release]
-[![hits][badge-jsdelivr]](https://www.jsdelivr.com/package/gh/metaist/duil.js)
+[![hits][badge-jsdelivr]](https://www.jsdelivr.com/package/npm/duil)
 
 [Latest Release]: https://github.com/metaist/duil.js/releases/latest
 [Documentation]: https://metaist.github.io/duil.js/
@@ -17,7 +17,7 @@
 [badge-license]: https://img.shields.io/badge/license-MIT-blue.svg
 [badge-travis]: https://travis-ci.org/metaist/duil.js.svg?branch=master
 [badge-release]: https://img.shields.io/github/downloads/metaist/duil.js/total.svg
-[badge-jsdelivr]: https://data.jsdelivr.com/v1/package/gh/metaist/duil.js/badge
+[badge-jsdelivr]: https://data.jsdelivr.com/v1/package/npm/duil/badge
 
 ## Why?
 You already know HTML and JavaScript, why should you learn a new syntax just to render templates and make components? You just need a something that updates when its data changes.
@@ -25,7 +25,12 @@ You already know HTML and JavaScript, why should you learn a new syntax just to 
 ## Getting Started
 Download the [latest release][Latest Release] or include the following code on your page:
 ```html
-<script src="https://cdn.jsdelivr.net/gh/metaist/duil.js@0.3.1/dist/duil.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/duil@0.3.1/dist/duil.min.js"></script>
+```
+
+For NodeJS:
+```
+yarn add duil
 ```
 
 ## Example
