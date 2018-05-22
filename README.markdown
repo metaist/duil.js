@@ -1,4 +1,4 @@
-# duil: data + ui = loop
+# duil = data + ui + loop
 [Latest Release] - [Documentation] - [Issues]
 
 **duil** (`/ˈduəl/`, like duel) is a simple JavaScript library for creating single page apps that react to changes in their underlying data. duil leverages the technologies you already know, like JavaScript and HTML, instead of making you learn a brand new syntax. With duil, you can create dynamic web pages with less code and cleaner abstractions.
