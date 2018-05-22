@@ -130,3 +130,53 @@ test('Widget.set', (t) => {
 
   t.end();
 });
+
+
+test('Widget.on', (t) => {
+  var count = 0;
+  var widget1 = new duil.Widget({property: {value: 1}});
+  var widget2 = new duil.Widget({
+    property: widget1.property,
+
+    init: function () {
+      widget1.on('render', this.render);
+      return this;
+    },
+
+    render: function () {
+      count += 1;
+      return this;
+    }
+  });
+  t.is(count, 1, 'render called on creation');
+
+
+  widget2.render();
+  t.is(count, 2, 'render called directly');
+
+  widget1.set('property.value', 2);
+  t.is(count, 3, 'render called when widget is updated');
+
+  widget1.set('property.value', 2);
+  t.is(count, 3, 'render NOT called when no updates');
+
+  widget1.trigger('render');
+  t.is(count, 4, 'render called when widget is triggered');
+
+  t.end();
+});
+
+
+test('Widget.trigger', (t) => {
+  const widget = new duil.Widget();
+  widget.on('myevent', (e) => {
+    t.is(e.type, 'myevent');
+    t.is(e.target, widget);
+    t.same(e.data, {extra: 'data'});
+  });
+  widget.trigger('myevent', {extra: 'data'});
+
+  t.ok(widget.trigger('noevent'));
+
+  t.end();
+});
