@@ -1,11 +1,11 @@
-/** duil v0.3.1 | @copyright 2018 Metaist LLC <metaist.com> | @license MIT */
+/** duil v0.3.1-dev | @copyright 2018 Metaist LLC <metaist.com> | @license MIT */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
   typeof define === 'function' && define.amd ? define(['exports'], factory) :
   (factory((global.duil = {})));
 }(this, (function (exports) { 'use strict';
 
-  var version = "0.3.1";
+  var version = "0.3.1-dev";
 
   /** Detect free variable `global` from Node.js. */
   var freeGlobal = typeof global == 'object' && global && global.Object === Object && global;
@@ -3991,7 +3991,7 @@
       * console.log(MyWidget.value);
       * // => 42
       */
-    init() { return this; }
+    init() { return this.trigger('init'); }
 
     /**
       @summary Render the widget based on its state.
@@ -4036,7 +4036,7 @@
       *   }
       * });
       */
-    render() { return this; }
+    render() { return this.trigger('render'); }
 
     /**
       @summary Update properties of the widget.
@@ -4049,6 +4049,8 @@
 
       @param {Object} props The new widget properties.
       @param {boolean} [force] Force calling `.render()` after property updates.
+      * Note that this also forces whether the `change` event is triggered
+      * regardless of whether any changes occur.
       @returns {duil.Widget} Returns the widget itself for chaining.
       @example
       * var MyWidget = new duil.Widget({
@@ -4075,7 +4077,37 @@
         });
       }// end if: check force rendering
 
-      if (doRender) { this.render(); } //
+      if (doRender) {
+        this.render();
+        this.trigger('change');
+      }// end if: rendered and triggered changes, if necessary
+      return this;
+    }
+
+    /**
+      @summary Register a handler to be called when events occur in this widget.
+      @param {string} type The name of the event to listen to.
+      @param {Function} handler The function to call when an event occurs.
+      @returns {Widget} Returns the widget itself for chaining.
+      */
+    on(type, handler) {
+      if (!this.on.handlers) { this.on.handlers = {}; }
+      if (!this.on.handlers[type]) { this.on.handlers[type] = []; }
+      this.on.handlers[type].push(handler);
+      return this;
+    }
+
+    /**
+      @summary Trigger an event on this widget.
+      @param {string} type The name of the event to trigger.
+      @param {Object} data Extra data to pass to the event.
+      @returns {Widget} Returns the widget itself for chaining.
+      */
+    trigger(type, data) {
+      // eslint-disable-next-line no-extra-parens
+      const handlers = (this.on.handlers && this.on.handlers[type]) || [];
+      const event = {type: type, target: this, data: data || {}};
+      handlers.forEach(handler => handler(event));
       return this;
     }
 
@@ -4596,6 +4628,6 @@
 
   Object.defineProperty(exports, '__esModule', { value: true });
 
-  exports._build = "2018-05-17T01:39:02.733Z";
+  exports._build = "2018-05-22T13:55:23.211Z";
 
 })));
