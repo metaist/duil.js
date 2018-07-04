@@ -3,18 +3,21 @@
     "exclude": ["./src/lodash.js"],
     "include": [
       "./src/duil.js",
-      "./src/jquery.duil.js",
       "./src/Widget.js",
       "./src/Group.js",
       "./src/List.js",
-      "./src/dom.js"
+      "./src/Queue.js",
+      "./src/consts.js",
+      "./src/diff.js",
+      "./src/dom.js",
+      "./src/jquery.duil.js"
     ]
   },
   "opts": {
     "encoding": "utf8",
     "template": "node_modules/docdash",
     "destination": "./docs/",
-    // "tutorials": "./tutorials",
+    "tutorials": "./tutorials",
     "readme": "README.markdown",
     "recurse": true,
     "verbose": true

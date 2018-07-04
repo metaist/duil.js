@@ -1,28 +1,34 @@
 <!doctype html>
 <html><head>
-  <title>marko example</title>
-  <style>
-  .count {
-      color:#09c;
-      font-size:3em;
-  }
-  .example-button {
-      font-size:1em;
-      padding:0.5em;
-  }
-  </style>
+<title>marko button in duil</title>
+<style>
+.count {
+    color:#09c;
+    font-size:3em;
+}
+.example-button {
+    font-size:1em;
+    padding:0.5em;
+}
+</style>
 </head><body>
+  <div>
+    <a href="https://github.com/metaist/duil.js/blob/master/tutorials/marko-button.html">view code</a>
+    (<a href="https://github.com/marko-js/marko#single-file">original</a>)
+    <hr />
+  </div>
+
   <div class="count"></div>
   <button class="example-button">Click me!</button>
 
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/metaist/duil.js/dist/duil.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/duil/dist/duil.min.js"></script>
 <script>
 /* global $: true, duil: true */
-// Example comes from: <https://github.com/marko-js/marko>
-new duil.Widget({ // eslint-disable-line no-new
+new duil.Widget({
   $dom: $('.count'),
 
+  // @override
   init: function () {
     this.count = 0;
     $('.example-button').on('click', this.increment);
@@ -33,6 +39,7 @@ new duil.Widget({ // eslint-disable-line no-new
     return this;
   },
 
+  // @override
   render: function () {
     this.$dom.text(this.count);
     return this;

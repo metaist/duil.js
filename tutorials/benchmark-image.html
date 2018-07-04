@@ -1,0 +1,301 @@
+<!doctype html>
+<html><head>
+  <meta charset="utf-8" />
+  <title>duil image rows benchmark</title>
+  <style>
+    .time { font-weight: bold; }
+    .hidden { display: none; }
+
+    .row {
+      margin: 0;
+      padding: 0.25rem;
+      display: flex;
+      flex-direction: row;
+      border-bottom: 1px solid #ccc;
+    }
+
+    .no-email { border: 1px solid black; }
+    .gravatar {
+      width: 50px;
+      min-height: 50px;
+      padding: 0;
+      margin: 0;
+    }
+
+    .images { margin-left: 1rem; }
+    .images img { padding-left: 0.5rem; }
+  </style>
+</head>
+<body>
+  <div id="tasks">
+    <p>
+      <a href="https://github.com/metaist/duil.js/blob/master/tutorials/benchmark-image.html">view code</a>
+    </p>
+
+    Tasks:
+    <ol>
+      <li class="load">load file</li>
+      <li class="create">
+        render <span class="count"></span> rows each containing:
+        <ul>
+          <li>a gravatar based on an email address</li>
+          <li>0-5 images</li>
+        </ul>
+      </li>
+      <li class="update">update a couple of items towards the top</li>
+      <li class="remove">remove bottom 10% of items</li>
+    </ol>
+    <hr />
+  </div>
+
+
+  <div class="container">
+    <div class="row">
+      <div class="gravatar">
+        <span></span>
+        <img class="gravicon" src="" />
+      </div>
+
+      <div class="images">
+        <img src="" />
+      </div>
+    </div>
+  </div>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/mazondo/gravatarjs/gravatar.js"></script>
+<script src="../dist/duil.min.js"></script>
+<script>
+/* global $:true, duil:true, gravatar:true */
+/* eslint-disable no-console */
+
+const NUM_USERS = 1E4;
+$('#tasks .count').text(NUM_USERS);
+
+const t0 = window.performance.now();
+const treport = (name, ms) => {
+  const sec = (ms - t0) / 1000;
+  $(`#tasks .${name}`).append(
+    ` <span class="time">(t=${sec.toFixed(2)} s; `+
+    `op/s: ${(NUM_USERS/sec).toFixed(2)})</span>`);
+  console.log(name, 'sec:', sec, 'ops/s:', NUM_USERS / sec);
+};
+
+const randInt = (min, max) => Math.floor(Math.random() * max) + min;
+
+
+class ImageList extends duil.List {
+  constructor(props) {
+    super(Object.assign({selector: 'img', name: 'ImageList'}, props));
+  }
+
+  /**
+    @description
+    Now we define how the data provided to us in the model should update
+    the DOM.
+
+    @override
+    @param {jQuery} $img The DOM node to update.
+    @param {Object} image The data model.
+    @param {number} index The model index.
+    @returns {jQuery} The rendered DOM.
+    */
+  // eslint-disable-next-line class-methods-use-this
+  update(view, model, index) {
+    // Update the image src and title attributes. We are assuming these are
+    // always present.
+    $(view).set({
+      'attr:src': model.path,
+      'attr:title': model.timestamp
+    });
+
+    // Return the rendered DOM.
+    return view;
+  }
+}
+
+/**
+  @description
+  The list of users is the top-level list of users. Each row has an
+  optional gravatar and list of images (managed by imageList).
+*/
+const userList = new duil.List({
+  name: 'userList',
+
+  /**
+    @description
+    Now we define the behavior of the outer widget.
+
+    @override
+    @property {jQuery} $dom The container into which rows will be rendered.
+    */
+  $dom: $('.container'),
+
+  // $tmpl: $('.container .row').remove(),
+
+  /**
+    @description
+    And we specify the selector for the outside widget.
+
+    @override
+    @property {string} selector The query selector for the rows.
+    */
+  selector: '.row',
+
+
+  // We keep track of the ImageList objects we create here.
+  images: {},
+
+  /**
+    @description
+    This is where we create a user. We create the HTML using the normal
+    `duil.List.create` method and then we create a corresponding ImageList.
+
+    @override
+    @param {*} user The data for this element.
+    @param {Number} index The model index.
+    @returns {jQuery} Returns the new element.
+  */
+  create: function (user, index) {
+    const view = this.invoke(duil.List, 'create', user, index);
+    this.images[user.id] = new ImageList({
+      $dom: view.find('.images'),
+      data: user.images
+    });
+
+    return view;
+  },
+
+  /**
+    @description
+    Here we define the rules for updating a single row. First, we update the
+    gravicon. If there's no email address, then hide the image.
+
+    Next, we set the imageList widget data to be the images and we set it's
+    container to be the div inside this template. This will cause the
+    imageList widget to re-render in the context of this div.
+
+    Finally, we return the properly rendered view.
+
+    @override
+    @param {jQuery} view The row to update.
+    @param {Object} user The user data model.
+    @param {number} index The index of the model.
+    */
+  update: function (view, user, index) {
+    // We walk through our template and set properties as appropriate.
+    $(view)
+      .data('id', user.id)
+      .find('span').set({text: user.id}).end()
+      .find('.gravatar') // Find the outside div for the gravatar icon.
+        .set({ // Add a border if there's no email and we set the tooltip.
+          'toggleClass:no-email': !user.email,
+          'attr:title': user.email ? user.email : 'No email address'
+        })
+      .end() // Bump our context back up to the whole row.
+      .find('.gravicon') // Find the image itself.
+        .set({ // Hide the image if there's no email and update the image src.
+          'toggleClass:hidden': !user.email,
+          'attr:src': user.email ? gravatar(user.email) : ''
+        })
+      .end();
+
+    // Now render the images for this user. Because the `.create()` method
+    // also calls `.update()`, we need to check if the ImageList has been
+    // created yet.
+    if (this.images[user.id]) {
+      this.images[user.id].set({data: user.images});
+    }
+
+    this.trigger('update', {view: view, model: user, index: index});
+    // Return the rendered row.
+    return view;
+  },
+
+
+  /**
+    @description
+    Whenever we need to remove a user row, we need to also clean up the
+    corresponding `ImageList`.
+
+    @override
+    @param {jQuery} view The DOM objects to remove.
+    @returns {duil.List} The widget itself for chaining.
+    */
+  remove: function(view, index) {
+    this.images[view.data('id')] = undefined;
+    return this.invoke(duil.List, 'remove', view, index);
+  }
+});
+
+// We define some users.
+let id = 1;
+
+const users = [{
+  // A user with no email address and no images.
+  id: id++,
+  email: '',
+  images: []
+}, {
+  // A user with an email address, but no images.
+  id: id++,
+  email: 'example@example.com',
+  images: []
+}, {
+  // A user with an image, but no email address.
+  id: id++,
+  email: '',
+  images: [{
+    path: 'http://via.placeholder.com/50x50',
+    timestamp: new Date().toISOString()
+  }]
+}];
+
+// // Now we set the userList data to the users we created.
+userList.set({data: users});
+
+const moreUsers = [];
+for (let i = id; i < NUM_USERS + 1; i += 1) {
+  let images = [];
+  for (let j = 0; j < randInt(0, 5); j += 1) {
+    images.push({
+      path: `http://via.placeholder.com/${randInt(50, 100)}x50`,
+      timestamp: new Date().toISOString()
+    })
+  }
+
+  // Add some more data to the model.
+  moreUsers.push({
+    // A user with an email address and images.
+    id: id++,
+    email: 'metaist+duil@metaist.com',
+    images: images
+  });
+}
+
+userList.on('create', (e) => {
+  if (NUM_USERS * 0.9 === e.data.index + 1) {
+    treport('create', window.performance.now());
+    treport('remove', window.performance.now()); // never get created
+  }
+});
+
+userList.set({data: users.concat(moreUsers)});
+
+userList.on('update', (e) => {
+  if (3 === e.data.index) {
+    treport('update', window.performance.now());
+  }
+});
+
+// Update a specific item.
+userList.set({
+  'data.2.email': 'tom@mojombo.com',   // Gravatar creator
+  'data.3.email': 'jeresig@gmail.com'  // jQuery creator
+});
+
+userList.set({data: userList.data.slice(0, NUM_USERS * 0.9)});
+
+treport('load', window.performance.now());
+</script>
+</body></html>

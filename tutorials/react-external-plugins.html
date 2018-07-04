@@ -1,0 +1,55 @@
+<!doctype html>
+<html><head>
+  <meta charset="utf-8" />
+  <title>React External Plugins in duil</title>
+</head>
+<body>
+  <div>
+    <a href="https://github.com/metaist/duil.js/blob/master/tutorials/react-external-plugins.html">view code</a>
+    (<a href="https://reactjs.org/">original</a>)
+    <hr />
+  </div>
+
+  <div id="root" class="MarkdownEditor">
+    <h3>Input</h3>
+    <label for="markdown-content">
+      Enter some markdown
+    </label><br />
+    <textarea id="markdown-content"></textarea>
+
+    <h3>Output</h3>
+    <div class="content"></div>
+  </div>
+
+<script src="https://cdn.jsdelivr.net/npm/remarkable@1.7.1/dist/remarkable.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/duil/dist/duil.min.js"></script>
+<script>
+const MarkdownEditor = new duil.Widget({
+  $dom: $('#root'),
+  value: 'Hello, **world**!',
+
+  md: new Remarkable(),
+
+  // @override
+  init: function () {
+    this.$text = this.$dom.find('textarea');
+    this.$dom
+      .on('keyup', 'textarea', this.keyup);
+    return this;
+  },
+
+  keyup: function (e) {
+    this.set({value: this.$text.val()});
+    return this;
+  },
+
+  // @override
+  render: function () {
+    this.$text.set({val: this.value}).end();
+    this.$dom.find('.content').html(this.md.render(this.value)).end();
+    return this;
+  }
+});
+</script>
+</body></html>

@@ -1,0 +1,71 @@
+<!doctype html>
+<html><head>
+  <meta charset="utf-8" />
+  <title>React ToDo Application in duil</title>
+</head>
+<body>
+  <div>
+    <a href="https://github.com/metaist/duil.js/blob/master/tutorials/react-todo-application.html">view code</a>
+    (<a href="https://reactjs.org/">original</a>)
+    <hr />
+  </div>
+
+  <div id="root">
+    <h3>TODO</h3>
+    <ul>
+      <li></li>
+    </ul>
+    <form>
+      <label for="new-todo">
+        What needs to be done?
+      </label>
+      <input id="new-todo" />
+      <button></button>
+    </form>
+  </div>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/duil/dist/duil.min.js"></script>
+<script>
+const TodoList = new duil.List({$dom: $('#root ul')});
+const TodoApp = new duil.Widget({
+  $dom: $('#root'),
+  items: [],
+  text: '',
+
+  // @override
+  init: function () {
+    this.$dom
+      .on('change', 'input', this.change)
+      .on('submit', 'form', this.submit);
+    return this;
+  },
+
+  // @override
+  render: function () {
+    this.$dom
+      .find('input').val(this.text).end()
+      .find('button').text('Add #' + (this.items.length + 1)).end();
+
+    TodoList.set({data: this.items});
+    return this;
+  },
+
+  change: function (e) {
+    this.set({text: e.target.value});
+    return this;
+  },
+
+  submit: function (e) {
+    e.preventDefault();
+    if (!this.text.length) { return; }
+
+    var nextItems = this.items.concat([this.text]);
+    var nextText = '';
+    this.set({items: nextItems, text: nextText});
+    this.$dom.find('input').focus();
+    return false;
+  }
+});
+</script>
+</body></html>
