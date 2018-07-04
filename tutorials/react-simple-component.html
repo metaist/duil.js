@@ -1,0 +1,32 @@
+<!doctype html>
+<html><head>
+  <meta charset="utf-8" />
+  <title>React Simple Component in duil</title>
+</head>
+<body>
+  <div>
+    <a href="https://github.com/metaist/duil.js/blob/master/tutorials/react-simple-component.html">view code</a>
+    (<a href="https://reactjs.org/">original</a>)
+    <hr />
+  </div>
+
+  <div id="root">
+  </div>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/duil/dist/duil.min.js"></script>
+<script>
+const HelloMessage = new duil.Widget({
+  $dom: $('#root'),
+  name: '',
+
+  // @override
+  render: function () {
+    this.$dom.text(`Hello ${this.name}`)
+    return this;
+  }
+});
+
+HelloMessage.set({name: 'Taylor'});
+</script>
+</body></html>

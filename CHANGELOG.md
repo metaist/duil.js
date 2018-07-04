@@ -7,13 +7,41 @@ The format is based on [Keep a Changelog] and this project adheres to [Semantic 
 [Semantic Versioning]: http://semver.org/spec/v2.0.0.html
 
 ---
-[Unreleased]: https://github.com/metaist/duil.js/compare/0.3.1...HEAD
-## [Unreleased]
-- _None_
+[Unreleased]: https://github.com/metaist/duil.js/compare/0.3.2...HEAD
+## [Unrelease]
+_No changes._
 
 ---
+[#9]: https://github.com/metaist/duil.js/issues/9
+[#13]: https://github.com/metaist/duil.js/issues/13
+[#18]: https://github.com/metaist/duil.js/issues/18
+[#21]: https://github.com/metaist/duil.js/issues/21
+[#22]: https://github.com/metaist/duil.js/issues/22
+[#23]: https://github.com/metaist/duil.js/issues/23
+[0.3.2]: https://github.com/metaist/duil.js/compare/0.3.1...0.3.2
+## [0.3.2] - 2018-07-03
+**Compatibility Warnings**
+- `Widget.render` now has a `changes` parameter which indicates which properties were changed. The impact is mostly felt by `Group.render` which now has different semantics and does not re-render the entire widget, but only those items which changed.
+- A related change is that `Group.render` will switch to asnychrnous rendering when the number of changes is very large (default: 1000). The new `Group.drain` method is called repeatedly until all the changes are made.
+
+**Added**
+- [#13]: npm package
+- [#22]: basic events (`.on`, `.off`, `.trigger`)
+- naive diff algorithm to speed up rendering (adds: `duil.diff`, `duil.merge`)
+- [#23]: render queue (via `duil.Queue` based on [infloop/queue.js](https://gist.github.com/infloop/8469659)). Big thanks to [@Pugio](https://github.com/Pugio) for suggestions on improving the render queue.
+- [#18]: performance tests
+- [#9]: react examples
+- [#21]: marko examples
+- lots of little tests to achieve 100% coverage
+
+**Changed**
+- Switched to using [`esm`](https://github.com/standard-things/esm) (thank you [@jdalton](https://github.com/jdalton)!) for build process.
+
+---
+[#7]: https://github.com/metaist/duil.js/issues/7
 [#11]: https://github.com/metaist/duil.js/issues/11
 [#13]: https://github.com/metaist/duil.js/issues/13
+[#14]: https://github.com/metaist/duil.js/issues/14
 [#12]: https://github.com/metaist/duil.js/issues/12
 [#18]: https://github.com/metaist/duil.js/issues/18
 [#19]: https://github.com/metaist/duil.js/issues/19

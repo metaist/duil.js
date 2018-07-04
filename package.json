@@ -1,6 +1,6 @@
 {
   "name": "duil",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Tiny data-driven ui rendering framework.",
   "keywords": [
     "data-ui-loop",
@@ -35,9 +35,9 @@
     "clean": "rm -rf .nyc_output; rm -rf coverage; rm -rf dist; rm -rf docs",
     "lint": "eslint build.js src/**/*.js test/**/*.js",
     "build": "./build.js",
-    "test": "tape test/*.js | tap-summary",
-    "perf": "tape test/perf/*.js | tap-summary",
-    "coverage": "nyc --reporter=html yarn test && nyc report",
+    "test": "tape -r esm test/*.js | tap-summary",
+    "perf": "tape -r esm test/perf/*.js | tap-summary",
+    "coverage": "nyc --require esm --reporter=html yarn test && nyc report",
     "docs": "jsdoc -c jsdoc.json"
   },
   "dependencies": {},
@@ -45,6 +45,7 @@
     "@types/lodash-es": "^4.17.0",
     "docdash": "^0.4.0",
     "eslint": "^4.19.1",
+    "esm": "^3.0.62",
     "jquery": "^3.3.1",
     "jsdoc": "^3.5.5",
     "jsdom": "^11.10.0",

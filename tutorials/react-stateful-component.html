@@ -1,0 +1,48 @@
+<!doctype html>
+<html><head>
+  <meta charset="utf-8" />
+  <title>React Stateful Component in duil</title>
+</head>
+<body>
+  <div>
+    <a href="https://github.com/metaist/duil.js/blob/master/tutorials/react-stateful-component.html">view code</a>
+    (<a href="https://reactjs.org/">original</a>)
+    <hr />
+  </div>
+
+  <div id="root">
+  </div>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/duil/dist/duil.min.js"></script>
+<script>
+const Timer = new duil.Widget({
+  $dom: $('#root'),
+  interval: false,
+  seconds: 0,
+
+  // @override
+  init: function () {
+    this.interval = window.setInterval(() => this.tick(), 1000);
+    return this;
+  },
+
+  // never actually called
+  destroy: function () {
+    window.clearInterval(this.interval);
+    return this;
+  },
+
+  tick: function () {
+    this.set({seconds: this.seconds + 1});
+    return this;
+  },
+
+  // @override
+  render: function () {
+    this.$dom.text(`Seconds: ${this.seconds}`)
+    return this;
+  }
+});
+</script>
+</body></html>

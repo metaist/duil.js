@@ -1,0 +1,30 @@
+<!doctype html>
+<html><head>
+  <meta charset="utf-8" />
+  <title>React Hello World in duil</title>
+</head>
+<body>
+  <div>
+    <a href="https://github.com/metaist/duil.js/blob/master/tutorials/react-hello-world.html">view code</a>
+    (<a href="https://reactjs.org/docs/hello-world.html">original</a>)
+    <hr />
+  </div>
+
+  <div id="root">
+    <h1></h1>
+  </div>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/duil/dist/duil.min.js"></script>
+<script>
+new duil.Widget({
+  $dom: $('#root h1'),
+
+  // @override
+  render: function () {
+    this.$dom.text('Hello, world!')
+    return this;
+  }
+});
+</script>
+</body></html>

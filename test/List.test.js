@@ -1,14 +1,11 @@
-try { delete require.cache[require.resolve('../dist/duil.min.js')]; }
-catch (e) { /* empty */ }
-
-const end_jsdom = require('jsdom-global')();
-const $ = require('jquery');
-global.$ = $; // for jQuery detection
-const test = require('tape');
-const duil = require('../dist/duil.min');
+import 'jsdom-global/register'
+import test from 'tape';
+import $ from 'jquery';
+import '../src/jquery.duil';
+import List from '../src/List';
 
 test('List', (t) => {
-  var list = new duil.List();
+  var list = new List();
 
   t.ok(list, 'empty list exists');
   t.same(list.data, []);
@@ -18,10 +15,10 @@ test('List', (t) => {
 });
 
 
-test('basic ul', (t) => {
+test('List: basic', (t) => {
   var $dom = $('<ul id="my-list"><li></li></ul>');
-  var list = new duil.List({
-    $dom: $dom[0],
+  var list = new List({
+    $dom: $dom,
     selector: 'li'
   });
 
@@ -42,14 +39,14 @@ test('basic ul', (t) => {
 
   data = data.slice(1, -1);
   list.set({data: data});
-  t.is($dom.children().length, 2, 'children are added');
+
+  t.is($dom.children().length, 2, 'children are removed');
   t.is($dom.find('li').eq(0).text(), data[0], 'template is rendered');
 
   t.end();
 });
 
-
-test('more complex list', (t) => {
+test('List: more complex', (t) => {
   var $dom = $(`<div id="duelists">
   <div class="duelist">
     <span class="year"></span>
@@ -57,7 +54,7 @@ test('more complex list', (t) => {
   </div>
 </div>`);
 
-  var list = new duil.List({
+  var list = new List({
     $dom: $dom,
     selector: '.duelist',
 
@@ -93,6 +90,3 @@ test('more complex list', (t) => {
 
   t.end();
 });
-
-
-end_jsdom();

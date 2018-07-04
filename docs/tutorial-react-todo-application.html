@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>jquery.duil.js - Documentation</title>
+    <title>Tutorial: react-todo-application - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -27,110 +27,93 @@
 
 <div id="main">
     
-    <h1 class="page-title">jquery.duil.js</h1>
+    <h1 class="page-title">Tutorial: react-todo-application</h1>
     
 
-    
-
-
-
-    
     <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>import * as _ from './lodash';
-import $ from 'jquery';
 
-/* eslint valid-jsdoc: 0 */
+<header>
+    
 
-/**
-  @external "jQuery.fn"
-  @description
-  * The [jQuery plugin](http://learn.jquery.com/plugins/) namespace.
-  */
-const jq = $;
+    <h2>react-todo-application</h2>
+</header>
 
-/**
-  @private
-  @param {*} val The value to apply. Functions will be called to determine
-    the actual value.
-  @param {string} key The property to set.
-  @returns {Object} The getter/setter, whether it's a class, and the value.
-  */
-const split = (val, key) => {
-  const [fn, name] = key.split(/:(.*)/, 2); // split on first colon
-  const $fn = name ?
-    // eslint-disable-next-line no-invalid-this
-    function (...args) { return jq.fn[fn].bind(this)(name, ...args); } :
-    jq.fn[fn];
+<article>
+    <!doctype html>
+<html><head>
+  <meta charset="utf-8" />
+  <title>React ToDo Application in duil</title>
+</head>
+<body>
+  <div>
+    <a href="https://github.com/metaist/duil.js/blob/master/tutorials/react-todo-application.html">view code</a>
+    (<a href="https://reactjs.org/">original</a>)
+    <hr />
+  </div>
 
-  return {
-    fn: $fn, // getter / setter
-    isClass: fn.endsWith('Class'),
-    val: _.isFunction(val) ? val : () => val // value function
-  };
-};
+  <div id="root">
+    <h3>TODO</h3>
+    <ul>
+      <li></li>
+    </ul>
+    <form>
+      <label for="new-todo">
+        What needs to be done?
+      </label>
+      <input id="new-todo" />
+      <button></button>
+    </form>
+  </div>
 
-/**
-  @summary Set attributes of the selected DOM objects if they haven't changed.
-  @description
-  * `attr` is one of:
-  *   - `html`
-  *   - `text`
-  *   - `val`
-  *   - `attr:[name]`
-  *   - `css:[name]`
-  *   - `data:[name]`
-  *   - `prop:[name]`
-  *
-  * These are called every time (i.e. no value check):
-  *   - `addClass`
-  *   - `removeClass`
-  *   - `toggleClass:[name]`
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/duil/dist/duil.min.js"></script>
+<script>
+const TodoList = new duil.List({$dom: $('#root ul')});
+const TodoApp = new duil.Widget({
+  $dom: $('#root'),
+  items: [],
+  text: '',
 
-  @function external:"jQuery.fn".set
-  @param {String} [attr] The attribute to set.
-  @param {*|Object} value The attribute value or a set of attribute/values.
-  @returns {jQuery} The selected jQuery object for chaining.
-  @example
-  * $('&lt;div>').set('html', 'New text');
-  * $('&lt;input />').set({
-  *   'val': 'New value',
-  *   'prop:disabled': true
-  * });
-  */
-const $set = function (attr, value) {
-  const rules = _.isPlainObject(attr) ?
-    Object.entries(attr).map(([k, v]) => split(v, k)) :
-    [split(value, attr)];
+  // @override
+  init: function () {
+    this.$dom
+      .on('change', 'input', this.change)
+      .on('submit', 'form', this.submit);
+    return this;
+  },
 
-  // eslint-disable-next-line no-invalid-this
-  return this.each((index, dom) => {
-    const $dom = jq(dom);
-    const className = dom.getAttribute('class');
-    rules.forEach((rule) => {
-      // get the previous and next values for the property
-      const fn = rule.fn.bind($dom);
-      const prev = rule.isClass ? className : fn();
-      const next = rule.val.bind(dom)(index, prev);
-      if (rule.isClass || prev !== next) { fn(next); } // change if different
-    });// end for: all rules applied
-  });// end for: all DOM nodes applied
-};
+  // @override
+  render: function () {
+    this.$dom
+      .find('input').val(this.text).end()
+      .find('button').text('Add #' + (this.items.length + 1)).end();
 
-// only install if jQuery-like API detected
-/* istanbul ignore else  */
-if (jq &amp;&amp; jq.extend &amp;&amp; jq.fn) {
-  // console.log('jQuery detected');
-  jq.fn.extend({set: $set});
-}
+    TodoList.set({data: this.items});
+    return this;
+  },
 
-export default $set
-</code></pre>
-        </article>
-    </section>
+  change: function (e) {
+    this.set({text: e.target.value});
+    return this;
+  },
 
+  submit: function (e) {
+    e.preventDefault();
+    if (!this.text.length) { return; }
 
+    var nextItems = this.items.concat([this.text]);
+    var nextText = '';
+    this.set({items: nextItems, text: nextText});
+    this.$dom.find('input').focus();
+    return false;
+  }
+});
+</script>
+</body></html>
 
+</article>
+
+</section>
 
 </div>
 

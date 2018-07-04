@@ -1,17 +1,17 @@
-/* eslint no-console: "off", yoda: "off", no-plusplus: "off" */
+import 'jsdom-global/register';
+import '../src/jquery.duil';
+import $ from 'jquery';
+import test from 'tape';
+import Widget from '../../src/Widget';
 
-const end_jsdom = require('jsdom-global')();
-const $ = require('jquery');
-global.$ = $; // for jQuery detection
-const test = require('tape');
-const duil = require('../../dist/duil');
+/* eslint no-console: "off", yoda: "off", no-plusplus: "off" */
 
 test('perf: textContent', (t) => {
   t.plan(0);
   const $dom = $('<div>');
   const dom = $dom[0];
   const times = 1E6;
-  const widget = new duil.Widget({
+  const widget = new Widget({
     dom: dom, i: 0,
     render: function () {
       this.dom.textContent = this.i;
@@ -33,7 +33,7 @@ test('perf: $.fn.text', (t) => {
   t.plan(0);
   const $dom = $('<div>');
   const times = 1E6;
-  const widget = new duil.Widget({
+  const widget = new Widget({
     $dom: $dom, i: 0,
     render: function () {
       this.$dom.text(this.i);
@@ -50,5 +50,3 @@ test('perf: $.fn.text', (t) => {
 
   t.end();
 });
-
-end_jsdom();
