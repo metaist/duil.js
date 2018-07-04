@@ -1,16 +1,13 @@
-try { delete require.cache[require.resolve('../dist/duil.min.js')]; }
-catch (e) { /* empty */ }
-
-const end_jsdom = require('jsdom-global')();
-const $ = require('jquery');
-global.$ = $; // for jQuery detection
-const test = require('tape');
-const duil = require('../dist/duil.min'); // eslint-disable-line no-unused-vars
+import 'jsdom-global/register';
+import test from 'tape';
+import $ from 'jquery';
+import '../src/jquery.duil';
 
 test('$.set installed', (t) => {
   t.ok($.extend);
   t.ok($.fn);
   t.ok($.fn.set);
+
   t.end();
 });
 
@@ -42,8 +39,8 @@ test('$.set multiple', (t) => {
   $dom.set({val: (index, prev) => `${prev} index ${index}`});
   t.is($dom.val(), `${vals.val} index 0`);
 
+  $dom.set('prop:disabled', true);
+  t.is($dom.prop('disabled'), vals['prop:disabled'], 'idempotent test');
+
   t.end();
 });
-
-
-end_jsdom();

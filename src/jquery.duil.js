@@ -1,4 +1,6 @@
 import * as _ from './lodash';
+import $ from 'jquery';
+
 /* eslint valid-jsdoc: 0 */
 
 /**
@@ -6,11 +8,14 @@ import * as _ from './lodash';
   @description
   * The [jQuery plugin](http://learn.jquery.com/plugins/) namespace.
   */
-const jq = Function('return this')().$; // eslint-disable-line no-new-func
-
+const jq = $;
 
 /**
   @private
+  @param {*} val The value to apply. Functions will be called to determine
+    the actual value.
+  @param {string} key The property to set.
+  @returns {Object} The getter/setter, whether it's a class, and the value.
   */
 const split = (val, key) => {
   const [fn, name] = key.split(/:(.*)/, 2); // split on first colon
@@ -56,14 +61,14 @@ const split = (val, key) => {
   */
 const $set = function (attr, value) {
   const rules = _.isPlainObject(attr) ?
-    _.map(attr, split) : [split(value, attr)];
+    Object.entries(attr).map(([k, v]) => split(v, k)) :
+    [split(value, attr)];
 
   // eslint-disable-next-line no-invalid-this
   return this.each((index, dom) => {
     const $dom = jq(dom);
     const className = dom.getAttribute('class');
-
-    _.forEach(rules, (rule) => {
+    rules.forEach((rule) => {
       // get the previous and next values for the property
       const fn = rule.fn.bind($dom);
       const prev = rule.isClass ? className : fn();
@@ -74,6 +79,10 @@ const $set = function (attr, value) {
 };
 
 // only install if jQuery-like API detected
-if (jq && jq.extend && jq.fn) { jq.fn.extend({set: $set}); }
+/* istanbul ignore else  */
+if (jq && jq.extend && jq.fn) {
+  // console.log('jQuery detected');
+  jq.fn.extend({set: $set});
+}
 
-export default $set;
+export default $set

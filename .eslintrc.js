@@ -109,7 +109,7 @@ module.exports = {
         ],
         "max-depth": "error",
         "max-len": ["error", {"ignoreUrls": true}],
-        "max-lines": "error",
+        "max-lines": ["error", {"skipBlankLines": true, "skipComments": true}],
         "max-nested-callbacks": "error",
         "max-params": "error",
         "max-statements": "off",
@@ -137,7 +137,7 @@ module.exports = {
         "no-extend-native": "error",
         "no-extra-bind": "error",
         "no-extra-label": "error",
-        "no-extra-parens": "error",
+        "no-extra-parens": ["error", "all", {"nestedBinaryExpressions": false}],
         "no-floating-decimal": "error",
         "no-implicit-coercion": "error",
         "no-implicit-globals": "error",
@@ -249,7 +249,11 @@ module.exports = {
             "error",
             "last"
         ],
-        "sort-imports": "error",
+        "sort-imports": ["error", {
+            "ignoreCase": true,
+            "ignoreMemberSort": false,
+            "memberSyntaxSortOrder": ["none", "all", "single", "multiple"]
+        }],
         "sort-keys": "off",
         "sort-vars": "error",
         "space-before-blocks": "error",

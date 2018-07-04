@@ -1,7 +1,45 @@
 <!doctype html>
-<html>
-  <body>
-      <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-      <script src="../dist/duil.min.js"></script>
-  </body>
-</html>
+<html><body>
+<h1>test area</h1>
+<dl>
+  <dt>lodash</dt>
+  <dd class="lodash"></dd>
+
+  <dt>jQuery</dt>
+  <dd class="jquery"></dd>
+
+  <dt>duil</dt>
+  <dd class="duil"></dd>
+</dl>
+
+<script src="https://cdn.jsdelivr.net/npm/lodash@4.17.10/lodash.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js"></script>
+<script src="../dist/duil.js"></script>
+<script>
+  $('.lodash').text(_.VERSION);
+  $('.jquery').text($.fn.jquery);
+
+  const factors = {
+    'ms': 1,
+    'sec': 1000,
+    'min': 60,
+    'hours': 60,
+    'days': 24
+  };
+
+  let time = new Date().getTime() - new Date(duil._build).getTime();
+  let label = 'ms';
+  _.forEach(factors, (factor, lbl) => {
+    time = time / factor;
+    if (time < 100) {
+      label = lbl;
+      return false;
+    }
+  });
+
+
+  $('.duil')
+    .text(`${duil.version} (${time.toFixed(2)} ${label})`)
+    .attr('title', duil._build);
+</script>
+</body></html>
