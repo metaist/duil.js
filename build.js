@@ -1,9 +1,14 @@
 #!/usr/bin/env node
+// std
 const path = require('path');
+
+// libs
 const rollup = require('rollup');
 const json = require('rollup-plugin-json');
 const resolve = require('rollup-plugin-node-resolve');
 const uglify = require('rollup-plugin-uglify');
+
+// project
 const pkg = require('./package.json');
 
 const PKG_NAME = pkg.name.replace('.js', '');
@@ -14,12 +19,16 @@ ${pkg.author.name} <${pkg.author.url}> | @license ${pkg.license} */`
 // Configuration data
 const config = {
   input: `src/${PKG_NAME}`,
+  external: ['jquery'],
   plugins: [resolve(), json()],
   output: {
     format: 'umd',
     file: `dist/${PKG_NAME}.js`,
     name: PKG_NAME,
     banner: banner,
+    globals: {
+      jquery: '$'
+    },
     outro: `exports._build = "${new Date().toISOString()}";`
   }
 };
