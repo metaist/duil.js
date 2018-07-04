@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog] and this project adheres to [Semantic 
 
 ---
 [Unreleased]: https://github.com/metaist/duil.js/compare/0.3.2...HEAD
-## [Unrelease]
+## [Unreleased]
 _No changes._
 
 ---
