@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>jquery.duil.js - Documentation</title>
+    <title>Tutorial: marko-button - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -27,110 +27,71 @@
 
 <div id="main">
     
-    <h1 class="page-title">jquery.duil.js</h1>
+    <h1 class="page-title">Tutorial: marko-button</h1>
     
 
-    
-
-
-
-    
     <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>import * as _ from './lodash';
-import $ from 'jquery';
 
-/* eslint valid-jsdoc: 0 */
+<header>
+    
 
-/**
-  @external "jQuery.fn"
-  @description
-  * The [jQuery plugin](http://learn.jquery.com/plugins/) namespace.
-  */
-const jq = $;
+    <h2>marko-button</h2>
+</header>
 
-/**
-  @private
-  @param {*} val The value to apply. Functions will be called to determine
-    the actual value.
-  @param {string} key The property to set.
-  @returns {Object} The getter/setter, whether it's a class, and the value.
-  */
-const split = (val, key) => {
-  const [fn, name] = key.split(/:(.*)/, 2); // split on first colon
-  const $fn = name ?
-    // eslint-disable-next-line no-invalid-this
-    function (...args) { return jq.fn[fn].bind(this)(name, ...args); } :
-    jq.fn[fn];
-
-  return {
-    fn: $fn, // getter / setter
-    isClass: fn.endsWith('Class'),
-    val: _.isFunction(val) ? val : () => val // value function
-  };
-};
-
-/**
-  @summary Set attributes of the selected DOM objects if they haven't changed.
-  @description
-  * `attr` is one of:
-  *   - `html`
-  *   - `text`
-  *   - `val`
-  *   - `attr:[name]`
-  *   - `css:[name]`
-  *   - `data:[name]`
-  *   - `prop:[name]`
-  *
-  * These are called every time (i.e. no value check):
-  *   - `addClass`
-  *   - `removeClass`
-  *   - `toggleClass:[name]`
-
-  @function external:"jQuery.fn".set
-  @param {String} [attr] The attribute to set.
-  @param {*|Object} value The attribute value or a set of attribute/values.
-  @returns {jQuery} The selected jQuery object for chaining.
-  @example
-  * $('&lt;div>').set('html', 'New text');
-  * $('&lt;input />').set({
-  *   'val': 'New value',
-  *   'prop:disabled': true
-  * });
-  */
-const $set = function (attr, value) {
-  const rules = _.isPlainObject(attr) ?
-    Object.entries(attr).map(([k, v]) => split(v, k)) :
-    [split(value, attr)];
-
-  // eslint-disable-next-line no-invalid-this
-  return this.each((index, dom) => {
-    const $dom = jq(dom);
-    const className = dom.getAttribute('class');
-    rules.forEach((rule) => {
-      // get the previous and next values for the property
-      const fn = rule.fn.bind($dom);
-      const prev = rule.isClass ? className : fn();
-      const next = rule.val.bind(dom)(index, prev);
-      if (rule.isClass || prev !== next) { fn(next); } // change if different
-    });// end for: all rules applied
-  });// end for: all DOM nodes applied
-};
-
-// only install if jQuery-like API detected
-/* istanbul ignore else  */
-if (jq &amp;&amp; jq.extend &amp;&amp; jq.fn) {
-  // console.log('jQuery detected');
-  jq.fn.extend({set: $set});
+<article>
+    <!doctype html>
+<html><head>
+<title>marko button in duil</title>
+<style>
+.count {
+    color:#09c;
+    font-size:3em;
 }
+.example-button {
+    font-size:1em;
+    padding:0.5em;
+}
+</style>
+</head><body>
+  <div>
+    <a href="https://github.com/metaist/duil.js/blob/master/tutorials/marko-button.html">view code</a>
+    (<a href="https://github.com/marko-js/marko#single-file">original</a>)
+    <hr />
+  </div>
 
-export default $set
-</code></pre>
-        </article>
-    </section>
+  <div class="count"></div>
+  <button class="example-button">Click me!</button>
 
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/duil/dist/duil.min.js"></script>
+<script>
+/* global $: true, duil: true */
+new duil.Widget({
+  $dom: $('.count'),
 
+  // @override
+  init: function () {
+    this.count = 0;
+    $('.example-button').on('click', this.increment);
+  },
 
+  increment: function () {
+    this.set({count: this.count + 1});
+    return this;
+  },
+
+  // @override
+  render: function () {
+    this.$dom.text(this.count);
+    return this;
+  }
+});
+</script>
+</body></html>
+
+</article>
+
+</section>
 
 </div>
 
