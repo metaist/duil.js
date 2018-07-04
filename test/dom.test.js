@@ -1,27 +1,42 @@
-try { delete require.cache[require.resolve('../dist/duil.min.js')]; }
-catch (e) { /* empty */ }
-
-const end_jsdom = require('jsdom-global')();
-const $ = require('jquery');
-global.$ = $; // for jQuery detection
-const test = require('tape');
-const duil = require('../dist/duil.min');
+import 'jsdom-global/register'
+import test from 'tape';
+import $ from 'jquery';
+import * as DOM from '../src/dom';
 
 test('dom.find', (t) => {
   const html = '<div><ul><li>First</li><li>Second</li></ul></div>';
   const $dom = $(html);
   const query = 'li';
-  const $result = duil._dom.find($dom, query);
+  const $result = DOM.find($dom, query);
 
-  t.is($result[0], duil._dom.find($dom[0], query));
+  t.is($result[0], DOM.find($dom[0], query));
   t.is($result.text(), 'First');
 
   t.end();
 });
 
+test('dom.clone', (t) => {
+  const html = '<div>Test</div>';
+  const el = DOM.clone($(html)[0]);
+
+  t.ok(el, 'expect an element');
+  t.end();
+});
+
+test('dom.append', (t) => {
+  const html = '<div></div>';
+  const el = DOM.clone($(html)[0]);
+  const child = $('<span>Test</span>')[0];
+
+  DOM.append(el, child);
+  t.same(el.children[0], child, 'expect child to be appended');
+
+  t.end();
+});
+
 test('dom.remove null', (t) => {
-  t.is(duil._dom.remove(), null);
-  t.is(duil._dom.remove(null), null);
+  t.is(DOM.remove(), null);
+  t.is(DOM.remove(null), null);
 
   t.end();
 });
@@ -30,32 +45,26 @@ test('dom.remove', (t) => {
   const html = '<div><ul><li>First</li><li>Second</li></ul></div>';
   const $dom = $(html);
   const query = 'li';
-  const $tmpl = duil._dom.find($dom, query);
+  const $tmpl = DOM.find($dom, query);
 
-  t.is($tmpl, duil._dom.remove($tmpl));
+  t.is($tmpl, DOM.remove($tmpl));
 
   const dom = $(html)[0];
-  const tmpl = duil._dom.find(dom, query);
-  t.is(tmpl, duil._dom.remove(tmpl));
+  const tmpl = DOM.find(dom, query);
+  t.is(tmpl, DOM.remove(tmpl));
 
   t.end();
 });
 
-test('dom.text', (t) => {
+test('dom.setText', (t) => {
   const text = 'text';
   const $dom = $('<div>');
-  duil._dom.setText($dom, text);
+  DOM.setText($dom, text);
   t.is($dom.text(), text);
 
-  t.end();
-});
-
-
-test('dom.getIndex', (t) => {
-  const $dom = $('<p>1</p><p>2</p><p>3</p>');
-  t.is('2', duil._dom.getIndex($dom, 1).text());
+  const el = $dom[0];
+  DOM.setText(el, 'new text');
+  t.is(el.textContent, 'new text', 'expect new text to be set');
 
   t.end();
 });
-
-end_jsdom();

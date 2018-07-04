@@ -1,8 +1,8 @@
-const test = require('tape');
-const duil = require('../dist/duil.min');
+import test from 'tape';
+import Widget from '../src/Widget';
 
 test('Widget is not empty', (t) => {
-  var widget = new duil.Widget();
+  var widget = new Widget();
 
   t.ok(widget, 'widget exists');
   t.is(widget.name, undefined, 'unknown property is undefined');
@@ -12,7 +12,7 @@ test('Widget is not empty', (t) => {
 
 test('Widget constructor', (t) => {
   const value = 5;
-  var thing = new duil.Widget({
+  var thing = new Widget({
     value: value,
     method: function () { return this.value; }
   });
@@ -27,7 +27,7 @@ test('Widget constructor', (t) => {
 });
 
 test('Widget subclassing', (t) => {
-  class NumberWidget extends duil.Widget {
+  class NumberWidget extends Widget {
     constructor(props) {
       super(Object.assign({val: 42}, props));
     }
@@ -43,7 +43,7 @@ test('Widget subclassing', (t) => {
 });
 
 test('Widget superclass', (t) => {
-  class WidgetA extends duil.Widget {
+  class WidgetA extends Widget {
     constructor(props) {
       Object.assign(WidgetA.prototype, {name: 'WidgetA'});
       super(props)
@@ -86,7 +86,7 @@ test('Widget superclass', (t) => {
 });
 
 test('Widget.init', (t) => {
-  var MyWidget = new duil.Widget({
+  var MyWidget = new Widget({
     // @override
     init: function () {
       this.value = 42;
@@ -99,7 +99,7 @@ test('Widget.init', (t) => {
 });
 
 test('Widget.render', (t) => {
-  var widget = new duil.Widget({
+  var widget = new Widget({
     model: 0,
     view: 'zero',
 
@@ -120,7 +120,7 @@ test('Widget.render', (t) => {
 });
 
 test('Widget.set', (t) => {
-  var MyWidget = new duil.Widget({
+  var MyWidget = new Widget({
     'stats.count': 42
   });
   t.is(MyWidget.stats.count, 42);
@@ -133,42 +133,74 @@ test('Widget.set', (t) => {
 
 
 test('Widget.on', (t) => {
-  var count = 0;
-  var widget1 = new duil.Widget({property: {value: 1}});
-  var widget2 = new duil.Widget({
-    property: widget1.property,
+  var side = new Widget();
+  var src = new Widget({property: {value: 1}});
+  var dst = new Widget({
+    name: 'dst',
+    times: 0,
+    property: src.property,
 
     init: function () {
-      widget1.on('render', this.render);
+      src.on('render', this.count);
       return this;
     },
 
-    render: function () {
-      count += 1;
+    count: function () {
+      this.times += 1;
       return this;
     }
   });
-  t.is(count, 1, 'render called on creation');
+
+  src.on('*,render', (e) => { t.ok(true, 'multiple handlers called')});
+
+  src.render();
+  t.is(dst.times, 0, 'no call on src.render without changes');
+
+  src.render({change: [false, true]});
+  t.is(dst.times, 1, 'call on src.render with changes');
+
+  src.trigger('render');
+  t.is(dst.times, 2, 'call on src.trigger render');
+
+  src.trigger('*');
+  t.is(dst.times, 2, 'call on src.trigger *');
+
+  src.set({'property.value': 2});
+  t.is(dst.times, 3, 'call on src.set with new value');
+
+  src.set({'property.value': 2});
+  t.is(dst.times, 3, 'no call on src.render with old value');
+
+  side.trigger('render');
+  t.is(dst.times, 3, 'no call on side.trigger');
+
+  t.end();
+});
 
 
-  widget2.render();
-  t.is(count, 2, 'render called directly');
+test('Widget.off', (t) => {
+  let count = 0;
+  const widget = new Widget();
+  const inc = () => { count += 1 };
+  widget.on('*,custom', inc);
 
-  widget1.set('property.value', 2);
-  t.is(count, 3, 'render called when widget is updated');
+  widget.trigger('custom');
+  t.is(count, 2, 'expect custom and global handlers');
 
-  widget1.set('property.value', 2);
-  t.is(count, 3, 'render NOT called when no updates');
+  widget.off('custom', inc);
+  widget.trigger('custom');
+  t.is(count, 3, 'expect only global handler');
 
-  widget1.trigger('render');
-  t.is(count, 4, 'render called when widget is triggered');
+  widget.off();
+  widget.trigger('custom');
+  t.is(count, 3, 'expect no handlers');
 
   t.end();
 });
 
 
 test('Widget.trigger', (t) => {
-  const widget = new duil.Widget();
+  const widget = new Widget();
   widget.on('myevent', (e) => {
     t.is(e.type, 'myevent');
     t.is(e.target, widget);
